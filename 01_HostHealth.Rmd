@@ -54,7 +54,7 @@ library(ragg)
 rm(list=ls()) # clear environment 
 
 
-git.dir = file.path("/hpc/group/dmc/Eva/GLP_KO_Microbiome_Study") # CHANGE ME 
+git.dir = file.path("/hpc/group/dmc/Eva/GLP_KO_Microbiome_final") # CHANGE ME 
 map.file = file.path(git.dir, "Metadata_GLP1.csv")
 meta.df = read_csv(map.file, show_col_types = FALSE)
 fig.dir = file.path(git.dir, "figures")
