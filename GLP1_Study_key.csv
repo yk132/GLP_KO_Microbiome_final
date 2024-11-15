@@ -1,0 +1,49 @@
+Mouse Number,Genotype,Sex,Diet,Intranasal,Surgery,Harvested at
+JI-651,KO,Male,High Fat Diet,PBS,No Surgery,Week 10
+JI-652,KO,Male,High Fat Diet,HDM,No Surgery,Week 10
+JI-653,KO,Female,High Fat Diet,HDM,No Surgery,Week 10
+JI-656,KO,Male,High Fat Diet,PBS,No Surgery,Week 10
+JI-657,KO,Male,Normal Chow,HDM,No Surgery,Week 10
+JI-658,KO,Male,Normal Chow,PBS,No Surgery,Week 10
+JI-659,KO,Male,Normal Chow,HDM,No Surgery,Week 10
+JI-660,KO,Male,Normal Chow,PBS,No Surgery,Week 10
+JI-666,KO,Female,High Fat Diet,HDM,No Surgery,Week 13
+JI-667,KO,Female,High Fat Diet,PBS,No Surgery,Week 13
+JI-668,KO,Male,High Fat Diet,HDM,Sham,Week 13
+JI-671,KO,Female,High Fat Diet,HDM,VSG,Week 13
+JI-674,KO,Female,High Fat Diet,PBS,Sham,Week 13
+JI-675,KO,Female,High Fat Diet,PBS,VSG,Week 13
+JI-676,KO,Male,High Fat Diet,PBS,VSG,Week 13
+JI-679,KO,Female,High Fat Diet,HDM,No Surgery,Week 13
+JI-683,KO,Female,Normal Chow,HDM,No Surgery,Week 13
+JI-684,KO,Female,Normal Chow,PBS,No Surgery,Week 13
+JI-685,KO,Female,Normal Chow,HDM,No Surgery,Week 13
+JI-686,KO,Female,High Fat Diet,PBS,VSG,Week 13
+JI-687,KO,Female,High Fat Diet,HDM,Sham,Week 13
+JI-688,KO,Female,High Fat Diet,HDM,VSG,Week 13
+JI-689,KO,Female,High Fat Diet,PBS,Sham,Week 13
+JI-692,KO,Male,High Fat Diet,HDM,Sham,Week 13
+JI-693,KO,Female,High Fat Diet,PBS,Sham,Week 13
+JI-646,WT,Male,Normal Chow,HDM,No Surgery,Week 10
+JI-647,WT,Male,Normal Chow,PBS,No Surgery,Week 10
+JI-648,WT,Male,Normal Chow,PBS,No Surgery,Week 10
+JI-649,WT,Male,Normal Chow,HDM,No Surgery,Week 10
+JI-650,WT,Female,High Fat Diet,HDM,No Surgery,Week 10
+JI-654,WT,Female,High Fat Diet,HDM,No Surgery,Week 10
+JI-655,WT,Male,High Fat Diet,PBS,No Surgery,Week 10
+JI-661,WT,Female,High Fat Diet,PBS,VSG,Week 13
+JI-662,WT,Male,High Fat Diet,PBS,Sham,Week 13
+JI-663,WT,Female,Normal Chow,HDM,No Surgery,Week 13
+JI-664,WT,Female,Normal Chow,PBS,No Surgery,Week 13
+JI-665,WT,Female,High Fat Diet,HDM,Sham,Week 13
+JI-669,WT,Female,High Fat Diet,PBS,Sham,Week 13
+JI-670,WT,Female,High Fat Diet,HDM,Sham,Week 13
+JI-672,WT,Female,High Fat Diet,HDM,No Surgery,Week 13
+JI-673,WT,Female,High Fat Diet,PBS,No Surgery,Week 13
+JI-677,WT,Female,Normal Chow,HDM,No Surgery,Week 13
+JI-678,WT,Female,Normal Chow,PBS,No Surgery,Week 13
+JI-680,WT,Female,High Fat Diet,HDM,No Surgery,Week 13
+JI-681,WT,Female,High Fat Diet,HDM,VSG,Week 13
+JI-682,WT,Female,High Fat Diet,PBS,Sham,Week 13
+JI-690,WT,Male,High Fat Diet,PBS,Sham,Week 13
+JI-691,WT,Male,High Fat Diet,HDM,No Surgery,Week 13
