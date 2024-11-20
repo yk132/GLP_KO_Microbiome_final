@@ -1,0 +1,1060 @@
+---
+title: "Differential Abundance Analysis (DAA): Lung Tissue"
+author: "Eva Kim"
+output: 
+  html_document:
+    df_print: paged
+    toc: true
+    toc_float: true
+    toc_collapsed: true
+    toc_depth: 3
+    number_sections: true
+    theme: lumen
+date: "`r format(Sys.time(), '%m/%d/%Y')`"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Based on the alpha and beta diversity results, I am not expecting to find a huge difference between groups in terms of bacterial composition. Please note that many of these code are from the Microbiome Intensive Course (MIC Course, Duke University, 2023) and thus the work of [Dr. Pixu Shi](https://scholars.duke.edu/person/Pixu.Shi). 
+
+This is after talking with Dr. Shi about what analyses I want to run. 
+
+# Set-Up
+
+First, update the `ANCOMBC` package if necessary. 
+
+```{r, results = 'hide', warning=FALSE, message=FALSE}
+#if (!requireNamespace("BiocManager", quietly=TRUE))
+#     install.packages("BiocManager")
+#BiocManager::install("ANCOMBC")
+```
+
+
+## Load libraries and directories
+
+```{r, results = 'hide', warning=FALSE, message=FALSE}
+# rm(list = ls(all = TRUE)) ## Unload all packages if necessary
+library(phyloseq)
+library(fs)
+library(rstatix)
+library(ggpubr)
+library(microViz)
+library(ANCOMBC)
+library(pals)
+library(RColorBrewer)
+library(colorBlindness)
+library(microbiome)
+library(ggrepel)
+library(DT)
+library(plotly)
+library(DESeq2)
+library(parallel)
+library(dplyr)
+library(tidyr)
+library(readr)
+library(tibble)
+library(stringr)
+```
+
+
+```{r, warning=FALSE, message=FALSE}
+rm(list=ls()) # clear environment 
+
+git.dir = file.path("/hpc/group/dmc/Eva/GLP_KO_Microbiome_final") # CHANGE ME 
+ps.rds <- file.path(git.dir, "ps.GLP1.rds")
+ps <- read_rds(ps.rds)
+ps
+
+fig.dir = file.path(git.dir, "figures")
+
+map.file = file.path(git.dir, "Metadata_GLP1.csv")
+meta.df = read_csv(map.file, show_col_types = FALSE)
+```
+
+# Prepare phyloseq object
+
+I will now aggregate at the genus level, as it is the smallest taxonomic rank that analyses will be run on. In other words, I do not plan on running differential abundance analysis at ASV level. 
+
+Let's prepare the phyloseq object for differential abundance analysis (DAA). Since we are interested in 1) differentially abundant taxa and 2) correlation analysis, we will limit the taxa to only ones that appear in > 3 samples for *each sample type*. 
+
+To avoid running analyses on extremely rare taxa that may be sequencing artifacts, the threshold for minimum number of counts is set at 10. This is, of course, arbitrary. 10 was chosen as 1% of number of read threshold of 1000 above for pruning samples. Based on how I wrote the code, taxa must be present have > 10 reads or more in > 3 samples. 
+
+Furthermore, categorical variables should be re-leveled as factors.
+
+```{r, warning=FALSE, message=FALSE}
+# Subset to true lung tissue samples only and remove tree
+ps  %>% subset_samples(Sample_type == "Lung Tissue" & Type == "True Sample") -> ps_lt
+ps_lt_notree <- phyloseq(otu_table(ps_lt), tax_table(ps_lt), sample_data(ps_lt))
+
+# Categorical variables should be factors 
+ps_lt_notree@sam_data$Genotype <- factor(ps_lt_notree@sam_data$Genotype, levels = c("WT", "KO"))
+ps_lt_notree@sam_data$Sex <- factor(ps_lt_notree@sam_data$Sex, levels = c("Female", "Male"))
+ps_lt_notree@sam_data$Intranasal_Treatment <- factor(ps_lt_notree@sam_data$Intranasal_Treatment, levels = c("PBS", "HDM"))
+ps_lt_notree@sam_data$Surgery <- factor(ps_lt_notree@sam_data$Surgery, levels = c("None", "Sham", "VSG"))
+ps_lt_notree@sam_data$Mouse %>% unique() -> mouse_levels
+ps_lt_notree@sam_data$Mouse <- factor(ps_lt_notree@sam_data$Mouse, levels = mouse_levels)
+ps_lt_notree@sam_data$Diet <- factor(ps_lt_notree@sam_data$Diet, levels = c("Normal_Chow", "High_Fat_Diet"))
+ps_lt_notree@sam_data$Group <- factor(ps_lt_notree@sam_data$Group, levels = c("NA", "Control", "1", "2"))
+
+ps_lt_notree
+
+# Aggregate at genus level
+ps_g_notree_LT <- tax_glom(ps_lt_notree, "Genus")
+taxa_names(ps_g_notree_LT) <- tax_table(ps_g_notree_LT)[, 'Genus']
+
+ps_g_notree_LT
+
+ps_g_notree_LT %>% transform_sample_counts(function(x) x/sum(x)) -> ps_genus.ts
+ps_genus.ts
+```
+
+## Getting ready: prune data
+
+We will prune the phyloseq object at each phylogenetic rank at and above genus. Since we plan on running correlation analysis after differential abundance, let's test for taxa that are present in at least 5 samples (arbitrary number) with greater than 10 reads in each sample (also arbitrary. It's also 1% of 1000 reads, which was the threshold used to remove samples from analysis). 
+
+### Genus 
+
+```{r}
+# Pruning: set threshold number 
+threshold_num = 4
+nreads_prune = 10
+
+# Prune taxa at each phylogenetic rank 
+ps_g_notree_LT %>%
+  filter_taxa(., function(x) {sum(x > nreads_prune) > threshold_num}, prune = TRUE) -> ps_genus.prune
+ps_genus.prune
+
+subset_taxa(ps_genus.ts, ps_genus.ts@tax_table[, "Genus"] %in% ps_genus.prune@tax_table[, "Genus"]) -> ps_genus.prune.ts
+ps_genus.prune.ts
+
+rowSums(ps_genus.prune.ts@otu_table) %>% as.data.frame() %>% 
+  dplyr::rename(RelAb = ".") %>% mutate(RelAb = RelAb * 100,
+                                        RelAb = format(RelAb, scientific = FALSE),
+                                        RelAb = as.numeric(RelAb)) %>% 
+  dplyr::arrange(RelAb) -> genus_prune_RelAb
+
+summary(genus_prune_RelAb$RelAb)
+```
+
+### Family 
+ 
+```{r}
+ps_lt_notree %>% tax_glom("Family") -> ps_Family  
+taxa_names(ps_Family) <- tax_table(ps_Family)[, 'Family']
+ps_Family
+
+ps_Family %>% transform_sample_counts(function(x) x/sum(x)) -> ps_Family.ts
+ps_Family.ts
+
+# Prune taxa at each phylogenetic rank 
+ps_Family %>%
+  filter_taxa(., function(x) {sum(x > nreads_prune) > threshold_num}, prune = TRUE) -> ps_Family.prune
+ps_Family.prune
+
+subset_taxa(ps_Family.ts, ps_Family.ts@tax_table[, "Family"] %in% ps_Family.prune@tax_table[, "Family"]) -> ps_Family.prune.ts
+ps_Family.prune.ts
+
+rowSums(ps_Family.prune.ts@otu_table) %>% as.data.frame() %>% 
+  dplyr::rename(RelAb = ".") %>% mutate(RelAb = RelAb * 100,
+                                        RelAb = format(RelAb, scientific = FALSE),
+                                        RelAb = as.numeric(RelAb)) %>% 
+  dplyr::arrange(RelAb) -> Family_prune_RelAb
+
+summary(Family_prune_RelAb)
+```
+
+### Order 
+ 
+```{r}
+ps_lt_notree %>% tax_glom("Order") -> ps_Order  
+taxa_names(ps_Order) <- tax_table(ps_Order)[, 'Order']
+ps_Order
+
+ps_Order %>% transform_sample_counts(function(x) x/sum(x)) -> ps_Order.ts
+ps_Order.ts
+
+# Prune taxa at each phylogenetic rank 
+ps_Order %>%
+  filter_taxa(., function(x) {sum(x > nreads_prune) > threshold_num}, prune = TRUE) -> ps_Order.prune
+ps_Order.prune
+
+subset_taxa(ps_Order.ts, ps_Order.ts@tax_table[, "Order"] %in% ps_Order.prune@tax_table[, "Order"]) -> ps_Order.prune.ts
+ps_Order.prune.ts
+
+rowSums(ps_Order.prune.ts@otu_table) %>% as.data.frame() %>% 
+  dplyr::rename(RelAb = ".") %>% mutate(RelAb = RelAb * 100,
+                                        RelAb = format(RelAb, scientific = FALSE),
+                                        RelAb = as.numeric(RelAb)) %>% 
+  dplyr::arrange(RelAb) -> Order_prune_RelAb
+
+summary(Order_prune_RelAb)
+```
+
+### Class 
+ 
+```{r}
+ps_lt_notree %>% tax_glom("Class") -> ps_Class  
+taxa_names(ps_Class) <- tax_table(ps_Class)[, 'Class']
+ps_Class
+
+ps_Class %>% transform_sample_counts(function(x) x/sum(x)) -> ps_Class.ts
+ps_Class.ts
+
+# Prune taxa at each phylogenetic rank 
+ps_Class %>%
+  filter_taxa(., function(x) {sum(x > nreads_prune) > threshold_num}, prune = TRUE) -> ps_Class.prune
+ps_Class.prune
+
+subset_taxa(ps_Class.ts, ps_Class.ts@tax_table[, "Class"] %in% ps_Class.prune@tax_table[, "Class"]) -> ps_Class.prune.ts
+ps_Class.prune.ts
+
+rowSums(ps_Class.prune.ts@otu_table) %>% as.data.frame() %>% 
+  dplyr::rename(RelAb = ".") %>% mutate(RelAb = RelAb * 100,
+                                        RelAb = format(RelAb, scientific = FALSE),
+                                        RelAb = as.numeric(RelAb)) %>% 
+  dplyr::arrange(RelAb) -> Class_prune_RelAb
+
+summary(Class_prune_RelAb)
+```
+
+### Phylum 
+ 
+```{r}
+ps_lt_notree %>% tax_glom("Phylum") -> ps_Phylum  
+taxa_names(ps_Phylum) <- tax_table(ps_Phylum)[, 'Phylum']
+ps_Phylum
+
+ps_Phylum %>% transform_sample_counts(function(x) x/sum(x)) -> ps_Phylum.ts
+ps_Phylum.ts
+
+# Prune taxa at each phylogenetic rank 
+ps_Phylum %>%
+  filter_taxa(., function(x) {sum(x > nreads_prune) > threshold_num}, prune = TRUE) -> ps_Phylum.prune
+ps_Phylum.prune
+
+subset_taxa(ps_Phylum.ts, ps_Phylum.ts@tax_table[, "Phylum"] %in% ps_Phylum.prune@tax_table[, "Phylum"]) -> ps_Phylum.prune.ts
+ps_Phylum.prune.ts
+
+rowSums(ps_Phylum.prune.ts@otu_table) %>% as.data.frame() %>% 
+  dplyr::rename(RelAb = ".") %>% mutate(RelAb = RelAb * 100,
+                                        RelAb = format(RelAb, scientific = FALSE),
+                                        RelAb = as.numeric(RelAb)) %>% 
+  dplyr::arrange(RelAb) -> Phylum_prune_RelAb
+
+summary(Phylum_prune_RelAb)
+```
+
+## Visualization
+
+Let's visualize at Phylum level to see how much information was kept: 
+
+```{r}
+plot_bar(ps_genus.prune.ts, x = "Label", fill="Phylum") + 
+  facet_grid(scales="free", space = "free_x") + 
+  geom_bar(aes(color=Phylum, fill=Phylum), stat="identity", position="stack") +  
+  theme_bw()  +   
+  coord_cartesian(ylim = c(0,1), expand=0) +
+  theme(axis.text.x=element_blank()) + # not showing samples names 
+  labs(y="Relative Abundance", title = "Relative Abundance of Lung Tissue Samples, Pruned @Genus", x = "Sample")+
+  scale_color_manual(values=SteppedSequential5Steps) + 
+  scale_fill_manual(values=SteppedSequential5Steps) 
+```
+
+```{r}
+plot_bar(ps_Family.prune.ts, x = "Label", fill="Phylum") + 
+  facet_grid(scales="free", space = "free_x") + 
+  geom_bar(aes(color=Phylum, fill=Phylum), stat="identity", position="stack") +  
+  theme_bw()  +   
+  coord_cartesian(ylim = c(0,1), expand=0) +
+  theme(axis.text.x=element_blank()) + # not showing samples names 
+  labs(y="Relative Abundance", title = "Relative Abundance of Lung Tissue Samples, Pruned @Family", x = "Sample")+
+  scale_color_manual(values=SteppedSequential5Steps) + 
+  scale_fill_manual(values=SteppedSequential5Steps) 
+```
+
+```{r}
+plot_bar(ps_Order.prune.ts, x = "Label", fill="Phylum") + 
+  facet_grid(scales="free", space = "free_x") + 
+  geom_bar(aes(color=Phylum, fill=Phylum), stat="identity", position="stack") +  
+  theme_bw()  +   
+  coord_cartesian(ylim = c(0,1), expand=0) +
+  theme(axis.text.x=element_blank()) + # not showing samples names 
+  labs(y="Relative Abundance", title = "Relative Abundance of Lung Tissue Samples, Pruned @Order", x = "Sample")+
+  scale_color_manual(values=SteppedSequential5Steps) + 
+  scale_fill_manual(values=SteppedSequential5Steps) 
+```
+
+```{r}
+plot_bar(ps_Class.prune.ts, x = "Label", fill="Class") + 
+  facet_grid(scales="free", space = "free_x") + 
+  geom_bar(aes(color=Class, fill=Class), stat="identity", position="stack") +  
+  theme_bw()  +   
+  coord_cartesian(ylim = c(0,1), expand=0) +
+  theme(axis.text.x=element_blank()) + # not showing samples names 
+  labs(y="Relative Abundance", title = "Relative Abundance of Lung Tissue Samples, Pruned @Class", x = "Sample")+
+  scale_color_manual(values=SteppedSequential5Steps) + 
+  scale_fill_manual(values=SteppedSequential5Steps) 
+```
+
+```{r}
+plot_bar(ps_Phylum.prune.ts, x = "Label", fill="Phylum") + 
+  facet_grid(scales="free", space = "free_x") + 
+  geom_bar(aes(color=Phylum, fill=Phylum), stat="identity", position="stack") +  
+  theme_bw()  +   
+  coord_cartesian(ylim = c(0,1), expand=0) +
+  theme(axis.text.x=element_blank()) + # not showing samples names 
+  labs(y="Relative Abundance", title = "Relative Abundance of Lung Tissue Samples, Pruned @Phylum", x = "Sample")+
+  scale_color_manual(values=SteppedSequential5Steps) + 
+  scale_fill_manual(values=SteppedSequential5Steps) 
+```
+
+## Subset metadata 
+
+```{r}
+meta.df %>% filter(Type == "True Sample" & Sample_type == "Lung Tissue") %>% 
+  filter(Label %in% phyloseq::sample_data(ps_g_notree_LT)$Label) -> meta.lt
+meta.lt
+```
+
+
+# Lung microbiome: tests to run 
+
+Let's see how many mice we have: 
+
+```{r}
+meta.lt %>% filter(Diet == "High_Fat_Diet" & Week == "13") %>% 
+  dplyr::count(Intranasal_Treatment, Surgery) %>% arrange(n)
+
+meta.lt %>% filter(Diet == "High_Fat_Diet" & Week == "13") %>% nrow()
+```
+
+*If* we assume that the difference between none --> sham surgery groups in PBS will be the same to the difference between none --> sham surgery group in HDM, we can run the analyses of `Intranasal_Treatment + Surgery`. 
+
+Note that neither surgery nor intranasal treatment caused significant microbiome changes using UniFrac and weighted UniFrac distances. 
+
+```{r}
+meta.lt %>% filter(Surgery == "None") %>% 
+  dplyr::count(Intranasal_Treatment, Diet) %>% arrange(n) 
+
+meta.lt %>% filter(Surgery == "None") %>% nrow()
+```
+
+Similar to above, let's run it with `Intranasal_Treatment * Diet`. 
+
+# Tools: ANCOM II and DESeq2
+
+I propose using ANalysis of COMposition, or ANCOM-II. Here are the associated [paper](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5682008/) and the [vignette](https://bioconductor.org/packages/release/bioc/vignettes/ANCOMBC/inst/doc/ANCOM.html). 
+
+DESeq2 was built for RNA-Seq data, not amplicon sequencing, but it has been a popular tool in amplicon sequencing field. Here are the associated [vignette](https://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html) and [paper](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-014-0550-8). 
+
+I do not believe ANCOM II will give results for each phylogenetic level when run at the highest resolution (ex. genus in this case). As such, ANCOM II might have to be run at **each** phylogenetic level. I will not be adjusting for multiple testing because the results should be about the same, just at different phylogenetic levels. 
+
+
+Note that function `ancom` refers to ANCOM II, and takes the *first* variable as main variable and the other as adjusting for. 
+
+DESeq2 is the opposite; *last* variable is main, all others are adjusting. 
+
+# Q1. Hypothesis testing: Intranasal_Treatment + Surgery, all on HFD, wk 13
+
+## Make TSE objects
+
+```{r}
+ps_genus.prune %>% subset_samples(Diet == "High_Fat_Diet" & Week == "13")  %>%
+  mia::makeTreeSummarizedExperimentFromPhyloseq() -> tse.LT.Q1.Genus
+tse.LT.Q1.Genus
+```
+
+```{r}
+ps_Family.prune %>% subset_samples(Diet == "High_Fat_Diet" & Week == "13")  %>%
+  mia::makeTreeSummarizedExperimentFromPhyloseq() -> tse.LT.Q1.Family
+tse.LT.Q1.Family
+
+ps_Order.prune %>% subset_samples(Diet == "High_Fat_Diet" & Week == "13")  %>%
+  mia::makeTreeSummarizedExperimentFromPhyloseq() -> tse.LT.Q1.Order
+tse.LT.Q1.Order
+
+ps_Class.prune %>% subset_samples(Diet == "High_Fat_Diet" & Week == "13")  %>%
+  mia::makeTreeSummarizedExperimentFromPhyloseq() -> tse.LT.Q1.Class
+tse.LT.Q1.Class
+
+ps_Phylum.prune %>% subset_samples(Diet == "High_Fat_Diet" & Week == "13")  %>%
+  mia::makeTreeSummarizedExperimentFromPhyloseq() -> tse.LT.Q1.Phylum
+tse.LT.Q1.Phylum
+```
+
+## ANCOM II 
+
+### Genus
+
+```{r}
+set.seed(123) # Set seed for reproducibility 
+n_cl_requested = 24
+
+# Genus level
+LT.Q1.Genus <- ANCOMBC::ancom(data=tse.LT.Q1.Genus, assay_name="counts", tax_level="Genus",
+                               p_adj_method="holm", prv_cut=0, lib_cut=0, 
+                               main_var="Intranasal_Treatment", adj_formula="Surgery",
+                               alpha = 0.05, struc_zero=TRUE,
+                               n_cl = n_cl_requested) 
+
+res.LT.Q1.Genus = LT.Q1.Genus$res
+res.LT.Q1.Genus %>% filter(detected_0.7 == TRUE) -> tab.LT.Q1.Genus.sig
+tab.LT.Q1.Genus.sig 
+```
+
+Since this is based on structural zeroes, switching the order will yield different results. 
+
+### Family
+
+```{r}
+# Family level
+LT.Q1.Family <- ANCOMBC::ancom(data=tse.LT.Q1.Family, assay_name="counts", tax_level="Family",
+                               p_adj_method="holm", prv_cut=0, lib_cut=0, 
+                               main_var="Intranasal_Treatment", adj_formula="Surgery",
+                               alpha = 0.05, struc_zero=TRUE,
+                               n_cl = n_cl_requested) 
+
+res.LT.Q1.Family = LT.Q1.Family$res
+res.LT.Q1.Family %>% filter(detected_0.7 == TRUE)  -> tab.LT.Q1.Family.sig
+tab.LT.Q1.Family.sig
+```
+
+Still all structural zeroes.
+
+### Order
+
+```{r}
+set.seed(123) # Set seed for reproducibility 
+
+# Order level
+LT.Q1.Order <- ANCOMBC::ancom(data=tse.LT.Q1.Order, assay_name="counts", tax_level="Order",
+                               p_adj_method="holm", prv_cut=0,  lib_cut=0, 
+                               main_var="Intranasal_Treatment", adj_formula="Surgery",
+                               alpha = 0.05, struc_zero=TRUE,
+                               n_cl = n_cl_requested) 
+
+res.LT.Q1.Order = LT.Q1.Order$res
+res.LT.Q1.Order %>% filter(detected_0.7 == TRUE) -> tab.LT.Q1.Order.sig
+tab.LT.Q1.Order.sig
+```
+
+### Class
+
+```{r}
+set.seed(123) # Set seed for reproducibility 
+
+# Class level
+LT.Q1.Class <- ANCOMBC::ancom(data=tse.LT.Q1.Class, assay_name="counts", tax_level="Class",
+                               p_adj_method="holm", prv_cut=0, lib_cut=0, 
+                               main_var="Intranasal_Treatment", adj_formula="Surgery",
+                               alpha = 0.05, struc_zero=TRUE,
+                               n_cl = n_cl_requested) 
+
+res.LT.Q1.Class = LT.Q1.Class$res
+res.LT.Q1.Class %>% filter(detected_0.7 == TRUE) -> tab.LT.Q1.Class.sig
+tab.LT.Q1.Class.sig
+```
+
+### Phylum
+
+```{r}
+set.seed(123) # Set seed for reproducibility 
+
+# Phylum level
+LT.Q1.Phylum <- ANCOMBC::ancom(data=tse.LT.Q1.Phylum, assay_name="counts", tax_level="Phylum",
+                               p_adj_method="holm", prv_cut=0, lib_cut=0, 
+                               main_var="Intranasal_Treatment", adj_formula="Surgery",
+                               alpha = 0.05, struc_zero=TRUE,
+                               n_cl = n_cl_requested) 
+
+res.LT.Q1.Phylum = LT.Q1.Phylum$res
+res.LT.Q1.Phylum %>% filter(detected_0.7 == TRUE)  -> tab.LT.Q1.Phylum.sig
+tab.LT.Q1.Phylum.sig
+```
+
+### Aggregate Results
+
+```{r}
+tab.LT.Q1.Genus.sig$Tax_rank <- "Genus"
+tab.LT.Q1.Family.sig$Tax_rank <- "Family"
+tab.LT.Q1.Order.sig$Tax_rank <- "Order"
+tab.LT.Q1.Class.sig$Tax_rank <- "Class"
+tab.LT.Q1.Phylum.sig$Tax_rank <- "Phylum"
+
+rbind(tab.LT.Q1.Genus.sig,
+      tab.LT.Q1.Family.sig,
+      tab.LT.Q1.Order.sig,
+      tab.LT.Q1.Class.sig,
+      tab.LT.Q1.Phylum.sig) -> tab.LT.Q1
+
+tab.LT.Q1$Test <- "ANCOM II, Lung Tissue: all HFD, wk 13, intranasal treatment + surgery. Structural zeroes from intranasal treatment"
+
+tab.LT.Q1 
+```
+
+Note that ALL of them are structural zeroes. 
+
+## DESeq2
+
+### Genus 
+
+```{r}
+ds.LT.Q1_Genus <- DESeq2::DESeqDataSet(tse.LT.Q1.Genus, ~ Intranasal_Treatment + Surgery)
+dds.LT.Q1_Genus <- DESeq2::DESeq(ds.LT.Q1_Genus)
+
+DESeq2::summary(dds.LT.Q1_Genus)
+resultsNames(dds.LT.Q1_Genus)
+```
+
+```{r}
+results(dds.LT.Q1_Genus, tidy = TRUE, contrast = c("Intranasal_Treatment", "HDM", "PBS")) %>% # tidy converts to df
+  filter(padj < 0.05) -> LT.Q1.Genus.Res
+LT.Q1.Genus.Res$Comparison <- c("Intranasal Treatment: HDM over PBS")
+
+results(dds.LT.Q1_Genus, contrast = c("Surgery", "Sham", "None"), tidy = TRUE) %>%
+  filter(padj < 0.05) -> tmp
+tmp$Comparison <- c("Surgery: Sham over None")
+rbind(tmp, LT.Q1.Genus.Res) -> LT.Q1.Genus.Res
+
+results(dds.LT.Q1_Genus, contrast = c("Surgery", "VSG", "None"), tidy = TRUE) %>%
+  filter(padj < 0.05) -> tmp
+tmp$Comparison <- c("Surgery: VSG over None")
+rbind(tmp, LT.Q1.Genus.Res) -> LT.Q1.Genus.Res
+
+LT.Q1.Genus.Res$Compare_taxon <- "Genus"
+
+LT.Q1.Genus.Res
+```
+
+### Family
+
+```{r}
+ds.LT.Q1_Family <- DESeq2::DESeqDataSet(tse.LT.Q1.Family, ~ Intranasal_Treatment + Surgery)
+dds.LT.Q1_Family <- DESeq2::DESeq(ds.LT.Q1_Family)
+
+results(dds.LT.Q1_Family, tidy = TRUE, contrast = c("Intranasal_Treatment", "HDM", "PBS")) %>% # tidy converts to df
+  filter(padj < 0.05) -> LT.Q1.Family.Res
+LT.Q1.Family.Res$Comparison <- c("Intranasal Treatment: HDM over PBS")
+
+results(dds.LT.Q1_Family, contrast = c("Surgery", "Sham", "None"), tidy = TRUE) %>%
+  filter(padj < 0.05) -> tmp
+tmp$Comparison <- c("Surgery: Sham over None")
+rbind(tmp, LT.Q1.Family.Res) -> LT.Q1.Family.Res
+
+results(dds.LT.Q1_Family, contrast = c("Surgery", "VSG", "None"), tidy = TRUE) %>%
+  filter(padj < 0.05) -> tmp
+tmp$Comparison <- c("Surgery: VSG over None")
+rbind(tmp, LT.Q1.Family.Res) -> LT.Q1.Family.Res
+
+LT.Q1.Family.Res$Compare_taxon <- "Family"
+
+LT.Q1.Family.Res
+
+```
+
+### Order
+
+```{r}
+ds.LT.Q1_Order <- DESeq2::DESeqDataSet(tse.LT.Q1.Order, ~ Intranasal_Treatment + Surgery)
+dds.LT.Q1_Order <- DESeq2::DESeq(ds.LT.Q1_Order)
+
+results(dds.LT.Q1_Order, tidy = TRUE, contrast = c("Intranasal_Treatment", "HDM", "PBS")) %>% # tidy converts to df
+  filter(padj < 0.05) -> LT.Q1.Order.Res
+LT.Q1.Order.Res$Comparison <- c("Intranasal Treatment: HDM over PBS")
+
+results(dds.LT.Q1_Order, contrast = c("Surgery", "Sham", "None"), tidy = TRUE) %>%
+  filter(padj < 0.05) -> tmp
+tmp$Comparison <- c("Surgery: Sham over None")
+rbind(tmp, LT.Q1.Order.Res) -> LT.Q1.Order.Res
+
+results(dds.LT.Q1_Order, contrast = c("Surgery", "VSG", "None"), tidy = TRUE) %>%
+  filter(padj < 0.05) -> tmp
+tmp$Comparison <- c("Surgery: VSG over None")
+rbind(tmp, LT.Q1.Order.Res) -> LT.Q1.Order.Res
+
+LT.Q1.Order.Res$Compare_taxon <- "Order"
+
+LT.Q1.Order.Res
+```
+
+### Class 
+
+```{r}
+ds.LT.Q1_Class <- DESeq2::DESeqDataSet(tse.LT.Q1.Class, ~ Intranasal_Treatment + Surgery)
+dds.LT.Q1_Class <- DESeq2::DESeq(ds.LT.Q1_Class)
+
+results(dds.LT.Q1_Class, tidy = TRUE, contrast = c("Intranasal_Treatment", "HDM", "PBS")) %>% # tidy converts to df
+  filter(padj < 0.05) -> LT.Q1.Class.Res
+LT.Q1.Class.Res$Comparison <- c("Intranasal Treatment: HDM over PBS")
+
+results(dds.LT.Q1_Class, contrast = c("Surgery", "Sham", "None"), tidy = TRUE) %>%
+  filter(padj < 0.05) -> tmp
+tmp$Comparison <- c("Surgery: Sham over None")
+rbind(tmp, LT.Q1.Class.Res) -> LT.Q1.Class.Res
+
+results(dds.LT.Q1_Class, contrast = c("Surgery", "VSG", "None"), tidy = TRUE) %>%
+  filter(padj < 0.05) -> tmp
+tmp$Comparison <- c("Surgery: VSG over None")
+rbind(tmp, LT.Q1.Class.Res) -> LT.Q1.Class.Res
+
+LT.Q1.Class.Res$Compare_taxon <- "Class"
+
+LT.Q1.Class.Res
+```
+
+### Phylum
+
+```{r}
+ds.LT.Q1_Phylum <- DESeq2::DESeqDataSet(tse.LT.Q1.Phylum, ~ Intranasal_Treatment + Surgery)
+dds.LT.Q1_Phylum <- DESeq2::DESeq(ds.LT.Q1_Phylum)
+
+results(dds.LT.Q1_Phylum, tidy = TRUE, contrast = c("Intranasal_Treatment", "HDM", "PBS")) %>% # tidy converts to df
+  filter(padj < 0.05) -> LT.Q1.Phylum.Res
+LT.Q1.Phylum.Res$Comparison <- c("Intranasal_Treatment", "HDM", "PBS")
+
+results(dds.LT.Q1_Phylum, contrast = c("Surgery", "Sham", "None"), tidy = TRUE) %>%
+  filter(padj < 0.05) -> tmp
+tmp$Comparison <- c("Surgery: Sham over None")
+rbind(tmp, LT.Q1.Phylum.Res) -> LT.Q1.Phylum.Res
+
+results(dds.LT.Q1_Phylum, contrast = c("Surgery", "VSG", "None"), tidy = TRUE) %>%
+  filter(padj < 0.05)  -> tmp
+tmp$Comparison <- c("Surgery: VSG over None")
+rbind(tmp, LT.Q1.Phylum.Res) -> LT.Q1.Phylum.Res
+
+LT.Q1.Phylum.Res$Compare_taxon <- "Phylum"
+
+LT.Q1.Phylum.Res
+```
+
+### Aggregate results
+
+```{r}
+rbind(LT.Q1.Genus.Res, 
+      LT.Q1.Family.Res,
+      LT.Q1.Class.Res,
+      LT.Q1.Order.Res,
+      LT.Q1.Phylum.Res) -> LT.Q1.deseq
+
+LT.Q1.deseq$Test <- "DESeq2, Lung Tissue: all HFD, wk 13, intranasal treatment + surgery"
+```
+
+```{r}
+tab.LT.Q1 %>% filter(taxon %in% LT.Q1.deseq$row) -> ancom.intersect
+ancom.intersect
+```
+
+```{r}
+LT.Q1.deseq %>% filter(row %in% tab.LT.Q1$taxon) %>%
+  distinct(row)
+```
+
+## Graph: LT, HFD group
+
+```{r}
+psmelt(ps_genus.prune.ts) -> Genus.prune.melt 
+psmelt(ps_Family.prune.ts) -> Family.prune.melt
+psmelt(ps_Order.prune.ts) -> Order.prune.melt
+psmelt(ps_Class.prune.ts) -> Class.prune.melt
+psmelt(ps_Phylum.prune.ts) -> Phylum.prune.melt
+```
+
+
+```{r, warning=FALSE}
+bind_rows(
+  Genus.prune.melt,
+  Family.prune.melt,
+  Order.prune.melt,
+  Class.prune.melt,
+  Phylum.prune.melt
+)  -> LT.RA.Full
+
+LT.RA.Full$Surgery <- factor(LT.RA.Full$Surgery, levels = c("None", "Sham", "VSG"))
+
+LT.RA.Full %>% 
+  dplyr::select(OTU:Label, Sample_type:Mouse, Genotype:Surgery, Week) -> LT.RA.Full
+
+head(LT.RA.Full)
+tail(LT.RA.Full)
+```
+
+```{r}
+LT.RA.Full %>% filter(Diet == "High_Fat_Diet" & Week == 13) -> lt.graph.hfd
+head(lt.graph.hfd)
+tail(lt.graph.hfd)
+```
+
+```{r}
+surgery.labs <- c("No Surgery", "Sham Surgery", "VSG")
+names(surgery.labs) <- c("None", "Sham", "VSG")
+
+for (i in 1:length(ancom.intersect$taxon)) {
+  lt.graph.hfd %>% 
+  filter(OTU == ancom.intersect$taxon[i]) %>%  
+  ggplot(aes(x = Surgery, y = Abundance, color = Surgery)) + 
+  geom_boxplot() + geom_point() +  
+  labs(y="Relative Abundance", title = str_glue(ancom.intersect$taxon[i], " Relative Abundance, LT; Surgery"),
+       x="Surgery") + 
+  theme_bw(base_size = 14) -> p
+  print(p)
+}
+
+for (i in 1:length(ancom.intersect$taxon)) {
+  lt.graph.hfd %>% 
+  filter(OTU == ancom.intersect$taxon[i]) %>%  
+  ggplot(aes(x = Intranasal_Treatment, y = Abundance, color = Intranasal_Treatment)) + 
+  geom_boxplot() + geom_point() +  
+  labs(y="Relative Abundance", title = str_glue(ancom.intersect$taxon[i], " Relative Abundance, LT; Intranasal Treatment"),
+       x="Intranasal Treatment") + 
+  theme_bw(base_size = 14) -> p
+  print(p)
+}
+
+```
+
+Very spurious. This is not doing interpretation on; it's unlikely that these spurious differences have biological meaning. 
+
+# Lung Tissue Question 2: Intranasal_Treatment * Diet, No surgery group
+
+## Make TSE objects
+
+```{r}
+meta.lt %>% filter(Surgery == "None")
+```
+
+```{r}
+ps_genus.prune %>% subset_samples(Surgery == "None")  %>%
+  mia::makeTreeSummarizedExperimentFromPhyloseq() -> tse.LT.Q2.Genus
+tse.LT.Q2.Genus
+```
+
+```{r}
+ps_Family.prune %>% subset_samples(Surgery == "None")  %>%
+  mia::makeTreeSummarizedExperimentFromPhyloseq() -> tse.LT.Q2.Family
+tse.LT.Q2.Family
+
+ps_Order.prune %>% subset_samples(Surgery == "None")  %>%
+  mia::makeTreeSummarizedExperimentFromPhyloseq() -> tse.LT.Q2.Order
+tse.LT.Q2.Order
+
+ps_Class.prune %>% subset_samples(Surgery == "None")  %>%
+  mia::makeTreeSummarizedExperimentFromPhyloseq() -> tse.LT.Q2.Class
+tse.LT.Q2.Class
+
+ps_Phylum.prune %>% subset_samples(Surgery == "None")  %>%
+  mia::makeTreeSummarizedExperimentFromPhyloseq() -> tse.LT.Q2.Phylum
+tse.LT.Q2.Phylum
+```
+
+
+## ANCOM II 
+
+### Genus
+
+```{r}
+set.seed(123) # Set seed for reproducibility 
+
+# Genus level
+LT.Q2.Genus <- ANCOMBC::ancom(data=tse.LT.Q2.Genus, assay_name="counts", tax_level="Genus",
+                               p_adj_method="holm", prv_cut=0, lib_cut=0, 
+                               main_var="Intranasal_Treatment", adj_formula="Diet",
+                               alpha = 0.05, struc_zero=TRUE,
+                               n_cl = n_cl_requested) 
+
+res.LT.Q2.Genus = LT.Q2.Genus$res
+res.LT.Q2.Genus %>% filter(detected_0.7 == TRUE) -> tab.LT.Q2.Genus.sig
+tab.LT.Q2.Genus.sig 
+```
+
+Since this is based on structural zeroes, switching the order will yield different results. 
+
+### Family
+
+```{r}
+# Family level
+LT.Q2.Family <- ANCOMBC::ancom(data=tse.LT.Q2.Family, assay_name="counts", tax_level="Family",
+                               p_adj_method="holm", prv_cut=0, lib_cut=0, 
+                               main_var="Intranasal_Treatment", adj_formula="Diet",
+                               alpha = 0.05, struc_zero=TRUE,
+                               n_cl = n_cl_requested) 
+
+res.LT.Q2.Family = LT.Q2.Family$res
+res.LT.Q2.Family %>% filter(detected_0.7 == TRUE)  -> tab.LT.Q2.Family.sig
+tab.LT.Q2.Family.sig
+```
+
+Still all structural zeroes.
+
+### Order
+
+```{r}
+set.seed(123) # Set seed for reproducibility 
+
+# Order level
+LT.Q2.Order <- ANCOMBC::ancom(data=tse.LT.Q2.Order, assay_name="counts", tax_level="Order",
+                               p_adj_method="holm", prv_cut=0,  lib_cut=0, 
+                               main_var="Intranasal_Treatment", adj_formula="Diet",
+                               alpha = 0.05, struc_zero=TRUE,
+                               n_cl = n_cl_requested) 
+
+res.LT.Q2.Order = LT.Q2.Order$res
+res.LT.Q2.Order %>% filter(detected_0.7 == TRUE) -> tab.LT.Q2.Order.sig
+tab.LT.Q2.Order.sig
+```
+
+### Class
+
+```{r}
+set.seed(123) # Set seed for reproducibility 
+
+# Class level
+LT.Q2.Class <- ANCOMBC::ancom(data=tse.LT.Q2.Class, assay_name="counts", tax_level="Class",
+                               p_adj_method="holm", prv_cut=0, lib_cut=0, 
+                               main_var="Intranasal_Treatment", adj_formula="Diet",
+                               alpha = 0.05, struc_zero=TRUE,
+                               n_cl = n_cl_requested) 
+
+res.LT.Q2.Class = LT.Q2.Class$res
+res.LT.Q2.Class %>% filter(detected_0.7 == TRUE) -> tab.LT.Q2.Class.sig
+tab.LT.Q2.Class.sig
+```
+
+### Phylum
+
+```{r}
+set.seed(123) # Set seed for reproducibility 
+
+# Phylum level
+LT.Q2.Phylum <- ANCOMBC::ancom(data=tse.LT.Q2.Phylum, assay_name="counts", tax_level="Phylum",
+                               p_adj_method="holm", prv_cut=0, lib_cut=0, 
+                               main_var="Intranasal_Treatment", adj_formula="Diet",
+                               alpha = 0.05, struc_zero=TRUE,
+                               n_cl = n_cl_requested) 
+
+res.LT.Q2.Phylum = LT.Q2.Phylum$res
+res.LT.Q2.Phylum %>% filter(detected_0.7 == TRUE)  -> tab.LT.Q2.Phylum.sig
+tab.LT.Q2.Phylum.sig
+```
+
+### Aggregate Results
+
+```{r}
+tab.LT.Q2.Genus.sig$Tax_rank <- "Genus"
+tab.LT.Q2.Family.sig$Tax_rank <- "Family"
+tab.LT.Q2.Order.sig$Tax_rank <- "Order"
+
+rbind(tab.LT.Q2.Genus.sig,
+      tab.LT.Q2.Family.sig,
+      tab.LT.Q2.Order.sig) -> tab.LT.Q2
+
+tab.LT.Q2$Test <- "ANCOM II, Lung Tissue: no surgery group, intranasal treatment * diet. Structural zeroes from intranasal treatment"
+
+tab.LT.Q2 
+```
+
+## DESeq2
+
+### Genus 
+
+```{r}
+ds.LT.Q2_Genus <- DESeq2::DESeqDataSet(tse.LT.Q2.Genus, ~ Intranasal_Treatment + Diet + Intranasal_Treatment:Diet)
+dds.LT.Q2_Genus <- DESeq2::DESeq(ds.LT.Q2_Genus)
+
+DESeq2::summary(dds.LT.Q2_Genus)
+resultsNames(dds.LT.Q2_Genus)
+```
+
+```{r}
+results(dds.LT.Q2_Genus, tidy = TRUE, contrast = c("Intranasal_Treatment", "HDM", "PBS")) %>% # tidy converts to df
+  filter(padj < 0.05) -> LT.Q2.Genus.Res
+LT.Q2.Genus.Res$Comparison <- c("Intranasal Treatment: HDM over PBS")
+
+results(dds.LT.Q2_Genus, tidy = TRUE, contrast = c("Diet", "High_Fat_Diet", "Normal_Chow")) %>% # tidy converts to df
+  filter(padj < 0.05) -> tmp
+tmp$Comparison <- c("Diet: HFD over normal chow")
+rbind(tmp, LT.Q2.Genus.Res) -> LT.Q2.Genus.Res
+
+results(dds.LT.Q2_Genus, name = "Intranasal_TreatmentHDM.DietHigh_Fat_Diet", tidy = TRUE) %>%
+  filter(padj < 0.05) -> tmp
+tmp$Comparison <- c("Intranasal treatment (HDM) and diet (HFD)")
+rbind(tmp, LT.Q2.Genus.Res) -> LT.Q2.Genus.Res
+
+LT.Q2.Genus.Res
+```
+
+### Family 
+
+```{r}
+ds.LT.Q2_Family <- DESeq2::DESeqDataSet(tse.LT.Q2.Family, ~ Intranasal_Treatment + Diet + Intranasal_Treatment:Diet)
+dds.LT.Q2_Family <- DESeq2::DESeq(ds.LT.Q2_Family)
+
+DESeq2::summary(dds.LT.Q2_Family)
+resultsNames(dds.LT.Q2_Family)
+```
+
+```{r}
+results(dds.LT.Q2_Family, tidy = TRUE, contrast = c("Intranasal_Treatment", "HDM", "PBS")) %>% # tidy converts to df
+  filter(padj < 0.05) -> LT.Q2.Family.Res
+LT.Q2.Family.Res$Comparison <- c("Intranasal Treatment: HDM over PBS")
+
+results(dds.LT.Q2_Family, tidy = TRUE, contrast = c("Diet", "High_Fat_Diet", "Normal_Chow")) %>% # tidy converts to df
+  filter(padj < 0.05) -> tmp
+tmp$Comparison <- c("Diet: HFD over normal chow")
+rbind(tmp, LT.Q2.Family.Res) -> LT.Q2.Family.Res
+
+results(dds.LT.Q2_Family, name = "Intranasal_TreatmentHDM.DietHigh_Fat_Diet", tidy = TRUE) %>%
+  filter(padj < 0.05) -> tmp
+tmp$Comparison <- c("Intranasal treatment (HDM) and diet (HFD)")
+rbind(tmp, LT.Q2.Family.Res) -> LT.Q2.Family.Res
+
+LT.Q2.Family.Res
+```
+
+### Order 
+
+```{r}
+ds.LT.Q2_Order <- DESeq2::DESeqDataSet(tse.LT.Q2.Order, ~ Intranasal_Treatment + Diet + Intranasal_Treatment:Diet)
+dds.LT.Q2_Order <- DESeq2::DESeq(ds.LT.Q2_Order)
+
+DESeq2::summary(dds.LT.Q2_Order)
+resultsNames(dds.LT.Q2_Order)
+```
+
+```{r}
+results(dds.LT.Q2_Order, tidy = TRUE, contrast = c("Intranasal_Treatment", "HDM", "PBS")) %>% # tidy converts to df
+  filter(padj < 0.05) -> LT.Q2.Order.Res
+LT.Q2.Order.Res$Comparison <- c("Intranasal Treatment: HDM over PBS")
+
+results(dds.LT.Q2_Order, tidy = TRUE, contrast = c("Diet", "High_Fat_Diet", "Normal_Chow")) %>% # tidy converts to df
+  filter(padj < 0.05) -> tmp
+tmp$Comparison <- c("Diet: HFD over normal chow")
+rbind(tmp, LT.Q2.Order.Res) -> LT.Q2.Order.Res
+
+results(dds.LT.Q2_Order, name = "Intranasal_TreatmentHDM.DietHigh_Fat_Diet", tidy = TRUE) %>%
+  filter(padj < 0.05) -> tmp
+tmp$Comparison <- c("Intranasal treatment (HDM) and diet (HFD)")
+rbind(tmp, LT.Q2.Order.Res) -> LT.Q2.Order.Res
+
+LT.Q2.Order.Res
+```
+
+
+### Class 
+
+```{r}
+ds.LT.Q2_Class <- DESeq2::DESeqDataSet(tse.LT.Q2.Class, ~ Intranasal_Treatment + Diet + Intranasal_Treatment:Diet)
+dds.LT.Q2_Class <- DESeq2::DESeq(ds.LT.Q2_Class)
+
+DESeq2::summary(dds.LT.Q2_Class)
+resultsNames(dds.LT.Q2_Class)
+```
+
+```{r}
+results(dds.LT.Q2_Class, tidy = TRUE, contrast = c("Intranasal_Treatment", "HDM", "PBS")) %>% # tidy converts to df
+  filter(padj < 0.05) -> LT.Q2.Class.Res
+LT.Q2.Class.Res$Comparison <- c("Intranasal Treatment: HDM over PBS")
+
+results(dds.LT.Q2_Class, tidy = TRUE, contrast = c("Diet", "High_Fat_Diet", "Normal_Chow")) %>% # tidy converts to df
+  filter(padj < 0.05) -> tmp
+tmp$Comparison <- c("Diet: HFD over normal chow")
+rbind(tmp, LT.Q2.Class.Res) -> LT.Q2.Class.Res
+
+results(dds.LT.Q2_Class, name = "Intranasal_TreatmentHDM.DietHigh_Fat_Diet", tidy = TRUE) %>%
+  filter(padj < 0.05) -> tmp
+tmp$Comparison <- c("Intranasal treatment (HDM) and diet (HFD)")
+rbind(tmp, LT.Q2.Class.Res) -> LT.Q2.Class.Res
+
+LT.Q2.Class.Res
+```
+
+
+### Phylum 
+
+```{r}
+ds.LT.Q2_Phylum <- DESeq2::DESeqDataSet(tse.LT.Q2.Phylum, ~ Intranasal_Treatment + Diet + Intranasal_Treatment:Diet)
+dds.LT.Q2_Phylum <- DESeq2::DESeq(ds.LT.Q2_Phylum)
+
+DESeq2::summary(dds.LT.Q2_Phylum)
+resultsNames(dds.LT.Q2_Phylum)
+```
+
+```{r}
+results(dds.LT.Q2_Phylum, tidy = TRUE, contrast = c("Intranasal_Treatment", "HDM", "PBS")) %>% # tidy converts to df
+  filter(padj < 0.05) -> LT.Q2.Phylum.Res
+LT.Q2.Phylum.Res$Comparison <- c("Intranasal Treatment: HDM over PBS")
+
+results(dds.LT.Q2_Phylum, tidy = TRUE, contrast = c("Diet", "High_Fat_Diet", "Normal_Chow")) %>% # tidy converts to df
+  filter(padj < 0.05) 
+
+results(dds.LT.Q2_Phylum, name = "Intranasal_TreatmentHDM.DietHigh_Fat_Diet", tidy = TRUE) %>%
+  filter(padj < 0.05) -> tmp
+tmp$Comparison <- c("Intranasal treatment (HDM) and diet (HFD)")
+rbind(tmp, LT.Q2.Phylum.Res) -> LT.Q2.Phylum.Res
+
+LT.Q2.Phylum.Res
+```
+
+### Aggregate results 
+
+```{r}
+rbind(LT.Q2.Genus.Res, 
+      LT.Q2.Family.Res,
+      LT.Q2.Class.Res,
+      LT.Q2.Order.Res,
+      LT.Q2.Phylum.Res) -> LT.Q2.deseq
+
+LT.Q2.deseq$Test <- "DESeq2, Lung Tissue: no surgery, intranasal treatment * diet"
+```
+
+```{r}
+tab.LT.Q2 %>% filter(taxon %in% LT.Q2.deseq$row) -> ancom.intersect.nosurgery
+ancom.intersect.nosurgery
+```
+
+*Pseudarcicella* is a genus that has been isolated from a skin of a [medical leech](https://www.microbiologyresearch.org/content/journal/ijsem/10.1099/ijs.0.037390-0). I really don't think this has any biological significance... Let's graph this just out of curiosity. 
+
+```{r}
+LT.Q2.deseq %>% filter(row %in% tab.LT.Q2$taxon)
+```
+
+### Graph 
+
+```{r}
+LT.RA.Full %>% filter(Surgery == "None") -> lt.graph.none
+head(lt.graph.none)
+tail(lt.graph.none)
+```
+
+```{r}
+for (i in 1:length(ancom.intersect.nosurgery$taxon)) {
+  lt.graph.none %>% 
+  filter(OTU == ancom.intersect.nosurgery$taxon[i]) %>%  
+  ggplot(aes(x = Intranasal_Treatment, y = Abundance, color = Intranasal_Treatment)) + 
+  geom_boxplot() + geom_point() +  
+  labs(y="Relative Abundance", title = str_glue(ancom.intersect.nosurgery$taxon[i], " Relative Abundance, LT; Intranasal treatment"),
+       x="Intranasal Treatment") + 
+  theme_bw(base_size = 14) -> p
+  print(p)
+}
+
+for (i in 1:length(ancom.intersect.nosurgery$taxon)) {
+  lt.graph.none %>% 
+  filter(OTU == ancom.intersect.nosurgery$taxon[i]) %>%  
+  ggplot(aes(x = Diet, y = Abundance, color = Diet)) + 
+  geom_boxplot() + geom_point() +  
+  labs(y="Relative Abundance", title = str_glue(ancom.intersect.nosurgery$taxon[i], " Relative Abundance, LT; Diet"),
+       x="Diet") + 
+  theme_bw(base_size = 14) -> p
+  print(p)
+}
+```
+
+Very spurious. This is not worth doing interpretation on; it's unlikely that these spurious differences have biological meaning. 
+
+# Reproducibility
+```{r}
+sessionInfo()
+```
+
