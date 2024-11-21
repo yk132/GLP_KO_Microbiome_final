@@ -1,0 +1,2 @@
+row,baseMean,log2FoldChange,lfcSE,stat,pvalue,padj,Comparison,Compare_taxon,Test
+Lactobacillaceae,3521.5151883869767,2.3784835410042238,0.6755925415998665,3.5205888084136507,4.3058977446305374e-4,0.006674141504177333,Week: week 13 over week 10,Family,"DESeq2, Fecal microbiome: all HFD, wk 10 + 13, Surgery * Week"
