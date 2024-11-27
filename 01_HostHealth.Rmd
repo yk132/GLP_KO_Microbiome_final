@@ -600,6 +600,9 @@ Glucose.calc %>% pivot_longer(
 ) -> Glucose.stat.raw
 ```
 
+```{r}
+write_csv(Glucose.calc, file.path(git.dir, "GLP1_study_glucose_calculations.csv"))
+```
 
 ## Glucose: no surgery group
 
