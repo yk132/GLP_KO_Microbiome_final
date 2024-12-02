@@ -1,0 +1,528 @@
+---
+title: "Correlations (Clean code)"
+author: "Eva Kim"
+output: 
+  html_document:
+    df_print: paged
+    toc: true
+    toc_float: true
+    toc_collapsed: true
+    toc_depth: 3
+    number_sections: true
+    theme: lumen
+date: "`r format(Sys.time(), '%m/%d/%Y')`"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+Taking the intersection of differentially abundant taxa and graphing them revealed that even when taking the intersection, lung tissue taxa prevalence was spurious. Since DAA was redone to reflect testing based on hypotheses, I am rerunning this code to see if there are differences. Lung tissue taxa prevalence is still spurious so I will be focusing on fecal taxa only. 
+
+# Method
+
+One method of running correlations is using the transformed relative abundance data then using Pearson correlation. I had previously used arcsine transformation and considered the centered-log ratio (CLR) transformation. However, plotting correlations with raw relative abundance may show non-obvious relationships. Per Dr. Shi's recommendation, I will be using Spearman's rank correlation (non-parametric) with the raw relative abundance values instead. 
+
+There are certain **lung tissue** taxa of interest for Dr. Ingram: Flavobacteriales, *Capnocytophaga* and *Flavobacterium*. In addition, differential immune cell counting data has been added on 2/10/2024. 
+
+# Set-Up
+
+## Load libraries and directories
+
+```{r, results = 'hide', warning=FALSE, message=FALSE}
+# rm(list = ls(all = TRUE)) ## Unload all packages if necessary
+library(rstatix)
+library(ggpubr)
+library(pals)
+library(RColorBrewer)
+library(ggrepel)
+library(DT)
+library(plotly)
+library(parallel)
+library(dplyr)
+library(tidyr)
+library(readr)
+library(tibble)
+library(stringr)
+library(phyloseq)
+library(Hmisc)
+library(cowplot)
+library(ggtext)
+```
+
+```{r, warning=FALSE, message=FALSE}
+rm(list=ls()) # clear environment 
+
+git.dir = file.path("/hpc/group/dmc/Eva/GLP_KO_Microbiome_final") # CHANGE ME 
+fig.dir = file.path(git.dir, "figures")
+
+map.file = file.path(git.dir, "Metadata_GLP1.csv")
+meta.df = read_csv(map.file, show_col_types = FALSE)
+
+F_hfd_intersect.file = file.path(git.dir, "fecal_deseq_hfd_intersect.csv")
+f.hfd.intersect = read_csv(F_hfd_intersect.file, show_col_types = FALSE)
+
+F_nosurgery_intersect.file = file.path(git.dir, "fecal_deseq_nosurgery_intersect.csv")
+f.nosurgery.intersect = read_csv(F_nosurgery_intersect.file, show_col_types = FALSE)
+
+F_RA.file = file.path("fecal_relative_abundance.csv")
+f.ra = read_csv(F_RA.file, show_col_types = FALSE)
+
+diff.file = file.path(git.dir, "GLP1_study_balf_diff_counts.csv")
+diff.df = read_csv(diff.file,col_names = TRUE, show_col_types = FALSE )
+
+glucose.file = file.path(git.dir, "GLP1_study_glucose_calculations.csv")
+glucose.df = read_csv(glucose.file, col_names = TRUE, show_col_types = FALSE )
+
+protein.file = file.path(git.dir, "GLP1_study_proteins.csv")
+protein.df = read_csv(protein.file,col_names = TRUE, show_col_types = FALSE )
+
+trichrome.file = file.path(git.dir, "GLP1_study_trichrome.csv")
+trichrome.df = read_csv(trichrome.file,col_names = TRUE, show_col_types = FALSE )
+
+hist.file = file.path(git.dir, "GLP1_study_histology.csv")
+hist.df = read_csv(hist.file, show_col_types = FALSE)
+```
+
+
+# Correlations: Tests to run 
+
+Based on the graphs of differentially abundant taxa that were both identified by DESeq2 and ANCOM-II, many taxa were spurious. As such, I will only run taxon-health marker correlation with fecal taxa. 
+
+In addition, there are a lot of variables to choose from and I expect more information to be available in near future. For now, the variables that I am most interested are:
+  1. Weight
+  2. Glucose calculations: AUC, MaxPeak, baseline
+  3. Serum protein levels except for insulin
+  4. Immune cells (eosinophils and neutrophils)
+  5. Histology scores and trichrome data 
+
+For simplicity, only fecal microbiome relative abundance on the same day as the health data was collected will be used. 
+
+## Clean up metadata for correlations
+
+```{r}
+meta.df %>%
+  filter(Sample_type == "Fecal" & Type == "True Sample") %>% 
+  select(Label, Mouse, Genotype:Surgery, Week, contains("Weight"))  -> meta.slim
+
+glucose.df %>% select(Mouse, Week, AUC:Glucose_min_0) -> glucose.slim
+
+meta.slim %>% 
+  left_join(glucose.slim, by = c("Mouse", "Week")) %>% filter(is.na(Mouse) == FALSE)  -> corr.df
+
+meta.slim %>% filter(Week == 13) %>%
+  right_join(diff.df, by = "Mouse") -> diff.meta.df
+```
+
+```{r}
+head(corr.df)
+head(diff.meta.df)
+```
+
+
+```{r}
+meta.slim %>% dim()
+f.ra %>% distinct(Sample) %>% nrow()
+```
+
+## Subset fecal taxa to only those that were differentially abundant
+
+```{r}
+f.hfd.intersect$Group <- "HFD"
+f.nosurgery.intersect$Group <- "No Surgery"
+
+rbind(f.hfd.intersect, f.nosurgery.intersect) -> f.intersect
+f.intersect
+```
+
+```{r}
+f.ra %>% filter(OTU %in% f.intersect$row) %>% 
+  select(Label, OTU, Abundance) %>%
+  pivot_wider(names_from = OTU,
+              values_from = Abundance) %>% 
+  dplyr::mutate(Label = as.character(Label)) -> FullRA.df
+
+FullRA.df %>% head()
+```
+
+## Weight Correlations
+
+```{r}
+corr.df %>% select(Label, Week, Weight_g_wk0:Weight_g_wk13) %>%
+  mutate(Weight = case_when(Week == 0 ~ Weight_g_wk0,
+                            Week == 10 ~ Weight_g_wk10,
+                            Week == 13 ~ Weight_g_wk13)) %>%
+  select(Label, Weight) %>% 
+  filter(is.na(Weight) != TRUE) %>%
+  left_join(FullRA.df, by = "Label") -> Weight.corr.df
+
+head(Weight.corr.df)
+dim(Weight.corr.df)
+```
+
+This dataframe structure is such that the recorded weight matches the fecal sample label for the day it was collected. 
+
+```{r}
+Weight.corr.df %>% colnames()
+```
+
+
+```{r}
+Weight.corr.df %>%
+  rstatix::cor_test(vars = Weight,
+           vars2 = c("Bifidobacterium":"Verrucomicrobiota"),
+           method = "spearman") -> Weight.corr.res 
+
+Weight.corr.res$n <- nrow(Weight.corr.df)
+Weight.corr.res$Week <- "0, 10, 13 (aggregated)"
+```
+
+
+## Glucose tolerance metrics
+
+```{r}
+corr.df %>% filter(is.na(AUC) != TRUE) %>% 
+  select(Label, AUC:Glucose_min_0)  %>%
+  left_join(FullRA.df, by = "Label") -> glucose.df
+
+glucose.df %>% colnames()
+```
+
+```{r}
+glucose.df %>%
+  rstatix::cor_test(vars = c(AUC, MaxPeak, Glucose_min_0),
+           vars2 = c("Bifidobacterium":"Verrucomicrobiota"),
+           method = "spearman") -> glucose.corr.res
+
+glucose.corr.res$n <- nrow(glucose.df)
+glucose.corr.res$Week <- "0, 10, 13 (aggregated)"
+```
+
+
+## Serum protein correlations
+
+```{r}
+protein.df  %>% dplyr::rename(
+  C_peptide_pg_ml = `C-Peptide_pg_ml`,
+  GLP1_pM = `GLP-1_pM`,
+  Insulin_uIU_ml = `Insulin_uIU/ml`
+) -> protein.df
+
+meta.slim %>%
+  filter(Mouse %in% protein.df$Sample) %>%
+  filter(Week==13) %>%
+  dplyr::rename(Sample = Mouse) %>%
+  right_join(protein.df, by = "Sample") %>%
+  select(Label, Sample, C_peptide_pg_ml:PYY_pg_ml) %>% 
+  left_join(FullRA.df, by = "Label") -> protein.micro.corr
+
+protein.micro.corr %>% colnames()
+```
+
+```{r}
+protein.micro.corr %>%
+  rstatix::cor_test(vars = c(C_peptide_pg_ml:PYY_pg_ml),
+           vars2 = c("Bifidobacterium":"Verrucomicrobiota"),
+           method = "spearman") -> protein.corr.res
+```
+
+
+```{r}
+protein.df %>% pivot_longer(
+  cols = c(C_peptide_pg_ml:PYY_pg_ml),
+  names_to = "var1",
+  values_to = "value"
+) %>% filter(is.na(value) == FALSE) %>% 
+  dplyr::count(var1) -> protein.n
+
+protein.n
+```
+
+```{r}
+protein.corr.res$Week <- "13"
+protein.corr.res %>% left_join(protein.n, by = "var1") -> protein.corr.res
+```
+
+
+## Immune cells
+
+
+```{r}
+diff.meta.df %>%
+  dplyr::filter(Intranasal_Treatment == "HDM") %>% 
+  select(Label, Per_Eos, Per_Neut) %>%
+  left_join(FullRA.df, by = "Label") %>%
+  filter(is.na(Label) == FALSE) -> diff.corr
+
+diff.corr %>% colnames()
+```
+
+```{r}
+diff.corr %>%
+  rstatix::cor_test(vars = c(Per_Neut, Per_Eos),
+           vars2 = c(`Bifidobacterium`:Verrucomicrobiota),
+           method = "spearman") -> diff.corr.res
+
+diff.corr.res$n <- nrow(diff.meta.df)
+diff.corr.res$Week <- "13"
+```
+
+## Trichrome and histopathology data
+
+```{r}
+trichrome.df %>% dplyr::select(Mouse, Mean_Percent_Trichrome_Area_outliers_removed) %>%
+  filter(is.na(Mean_Percent_Trichrome_Area_outliers_removed) == FALSE) %>% 
+  distinct(.keep_all = TRUE) -> trichrome.mean
+
+hist.df %>% dplyr::select(Mouse, HE_score, PAS_score) %>% 
+  full_join(trichrome.mean, by = "Mouse") -> hist.tri
+
+meta.slim %>% filter(Week == 13 & Mouse %in% hist.tri$Mouse) %>% 
+  dplyr::select(Label, Mouse) %>% left_join(hist.tri, by = "Mouse") -> hist.tri.sam
+
+FullRA.df %>% filter(Label %in% hist.tri.sam$Label) %>%
+  right_join(hist.tri.sam, by = "Label") -> hist.tri.corr
+
+hist.tri.corr %>% colnames()
+```
+
+```{r}
+hist.tri.corr %>%
+  rstatix::cor_test(vars = c(HE_score:Mean_Percent_Trichrome_Area_outliers_removed),
+           vars2 = c("Bifidobacterium":"Verrucomicrobiota"),
+           method = "spearman") -> hist.corr.res
+
+
+hist.corr.res$n <- nrow(hist.tri.corr)
+hist.corr.res$Week <- "13"
+```
+
+
+# Aggregate and correct for multiple testing 
+
+
+```{r}
+Weight.corr.res$Test <- "Weight"
+glucose.corr.res$Test <- "Glucose tolerance testing"
+diff.corr.res$Test <- "% immune cells; HDM"
+protein.corr.res$Test <- "Serum proteins"
+hist.corr.res$Test <- "Histology or % trichrome; HDM"
+
+rbind(Weight.corr.res,
+      glucose.corr.res,
+      diff.corr.res,
+      protein.corr.res,
+      hist.corr.res) %>% adjust_pvalue(method = "BH") %>%
+  filter(p.adj < 0.05) %>%
+  add_significance() %>%
+  mutate(p.adj.print = format(p.adj, digits = 2)) -> micro.corr.res
+  
+f.intersect %>% dplyr::select(row, Compare_taxon) %>% distinct() -> f.intersect.taxa
+
+micro.corr.res %>% dplyr::rename(Health_metric = var1, row = var2, Metric_Type = Test) %>% 
+  left_join(f.intersect.taxa, by = "row") %>%
+  dplyr::rename(Taxonomic_Rank = Compare_taxon,
+                Taxon = row) %>% 
+  dplyr::mutate(Taxonomic_Rank = factor(Taxonomic_Rank, levels = c("Phylum", "Class", "Order", "Family", "Genus"))) %>% 
+  arrange(Taxonomic_Rank, Taxon) -> micro.corr.res
+
+write_csv(micro.corr.res, file.path(git.dir, "Microbiome_corr_res.csv"), append = FALSE, col_names = TRUE)
+```
+
+```{r}
+micro.corr.res
+```
+
+```{r}
+micro.corr.res %>% datatable()
+```
+
+
+```{r}
+micro.corr.res %>% dplyr::count(Taxon) %>% arrange(desc(n))
+```
+
+
+# Graphs: all
+
+
+```{r}
+f.ra %>% filter(OTU %in% f.intersect$row) %>% 
+  dplyr::select(-Sample) %>% 
+  dplyr::rename(taxon = OTU, RA = Abundance) %>% 
+  mutate(Week_factor = factor(Week, levels = c("0", "10", "13")),
+         Diet = str_replace(Diet, "Normal_Chow", "Normal Chow"),
+         Diet = str_replace(Diet, "High_Fat_Diet", "High Fat Diet"),
+         Diet = factor(Diet, levels = c("Normal Chow", "High Fat Diet")),
+         Label = as.character(Label)) -> f.ra.graph
+```
+
+```{r}
+f.ra.graph
+```
+
+```{r}
+Weight.corr.df %>% dplyr::select(Label, Weight) %>% 
+  right_join(f.ra.graph, by = "Label") -> f.ra.graph.corr
+head(f.ra.graph.corr)
+```
+
+
+```{r}
+corr.df %>% select(Label, AUC:Glucose_min_0) %>%
+  right_join(f.ra.graph.corr, by = "Label") -> f.ra.graph.corr
+
+protein.micro.corr %>% select(Label, C_peptide_pg_ml:PYY_pg_ml) %>%
+  right_join(f.ra.graph.corr, by = "Label") -> f.ra.graph.corr
+
+hist.tri.sam %>% select(Label, HE_score:Mean_Percent_Trichrome_Area_outliers_removed) %>%
+  right_join(f.ra.graph.corr, by = "Label") -> f.ra.graph.corr
+
+diff.meta.df %>% select(Label, Per_Eos:Per_Neut) %>%
+  right_join(f.ra.graph.corr, by = "Label") -> f.ra.graph.corr
+```
+
+```{r}
+head(f.ra.graph.corr)
+```
+
+```{r}
+micro.corr.res
+```
+
+```{r}
+for (i in 1:length(micro.corr.res$Health_metric)) {
+  yvar <- micro.corr.res$Health_metric[i]
+  q <- micro.corr.res$p.adj.print[i]
+  value <- micro.corr.res$cor[[i]]
+  str_glue("p = ", q, "\n Cor. coeff = ", value) -> label_corr
+
+  f.ra.graph.corr %>%
+    filter(taxon == micro.corr.res$Taxon[i]) %>%
+    ggplot(aes(x = RA, y = .data[[yvar]])) + 
+      geom_point() +
+      labs(y= str_glue(micro.corr.res$Health_metric[i]),
+           x= str_glue(micro.corr.res$Taxon[i], " ","Relative Abundance"),
+           title = str_glue("Spearman's rank correlation, ", yvar, 
+                            " & ", micro.corr.res$Taxon[i])) +
+      theme_bw()+ expand_limits(y = 0) +
+      geom_text(aes(label = label_corr), x = Inf, y = Inf, vjust = "inward", hjust = "inward", family = "sans") -> p
+      print(p)
+}
+```
+
+# Specific taxa
+
+Based on literature review, focus on *Lachnospiraceae UCG-001*, *Bifidobacterium*, and *Parasutterella*.
+
+```{r}
+f.ra.graph %>% 
+  filter(taxon == "Lachnospiraceae UCG-001" & Surgery == "None") %>%  # no surgery group!!!! 
+  ggplot(aes(x = Week_factor, y = RA)) + 
+  geom_violin() + geom_boxplot(width=0.1) + 
+  facet_wrap(vars(Diet))  + 
+  labs(y="*Lachnospiraceae UCG-001* Relative Abundance", x = "Week") + 
+  theme_bw(base_size = 14)+ 
+  theme(axis.title.y = element_markdown()) -> fig.lachno.rel
+
+fig.lachno.rel
+```
+
+
+
+
+```{r}
+f.ra.graph %>% 
+  filter(taxon == "Bifidobacterium" & Surgery == "None") %>%  # no surgery group!!!! 
+  ggplot(aes(x = Week_factor, y = RA)) + 
+  geom_violin() + geom_boxplot(width=0.1) + 
+  facet_wrap(vars(Diet))  + 
+  labs(y="*Bifidobacterium* Relative Abundance", x = "Week") + 
+  theme_bw(base_size = 14) + 
+  theme(axis.title.y = element_markdown())-> fig.Bifido.rel
+
+fig.Bifido.rel
+```
+
+```{r}
+f.ra.graph %>% 
+  filter(taxon == "Parasutterella" & Surgery == "None") %>%  # no surgery group!!!! 
+  ggplot(aes(x = Week_factor, y = RA)) + 
+  geom_violin() + geom_boxplot(width=0.1) + 
+  facet_wrap(vars(Diet))  + 
+  labs(y="*Parasutterella* Relative Abundance", x = "Week") + 
+  theme_bw(base_size = 14) + 
+  theme(axis.title.y = element_markdown()) -> fig.para.rel
+
+fig.para.rel
+```
+
+
+```{r}
+micro.corr.res %>% 
+  filter(Taxon == "Lachnospiraceae UCG-001" | Taxon == "Bifidobacterium" | Taxon == "Parasutterella") %>%
+  arrange(cor)
+```
+
+```{r}
+protein.micro.corr %>%
+    ggplot(aes(x = `Lachnospiraceae UCG-001`, y = GLP1_pM)) + 
+      geom_point() +
+      labs(y= "GLP-1 (pM)",
+           x= "*Lachnospiraceae UCG-001* Relative Abundance") +
+      theme_bw(base_size = 14)+ expand_limits(y = 0) + 
+  theme(axis.title.x = element_markdown())-> fig.lachno.glp1
+fig.lachno.glp1
+```
+
+```{r}
+protein.micro.corr %>%
+    ggplot(aes(x = Bifidobacterium, y = GLP1_pM)) + 
+      geom_point() +
+      labs(y= "GLP-1 (pM)",
+           x= "*Bifidobacterium* Relative Abundance") +
+      theme_bw(base_size = 14)+ expand_limits(y = 0)+ 
+  theme(axis.title.x = element_markdown())  -> fig.bifido.glp1
+
+fig.bifido.glp1
+```
+
+```{r}
+protein.micro.corr %>%
+    ggplot(aes(x = Parasutterella, y = GLP1_pM)) + 
+      geom_point() +
+      labs(y= "GLP-1 (pM)",
+           x= "*Parasutterella* Relative Abundance") +
+      theme_bw(base_size = 14)+ expand_limits(y = 0) + 
+  theme(axis.title.x = element_markdown()) -> fig.para.glp1
+
+fig.para.glp1
+```
+
+
+
+```{r, fig.height=12, fig.width=12}
+plot_grid(
+  fig.Bifido.rel, fig.bifido.glp1,
+  fig.lachno.rel, fig.lachno.glp1,
+  fig.para.rel, fig.para.glp1,
+  labels = "AUTO", ncol = 2, label_size = 20, scale = 0.9,
+  rel_widths = c(1.3, 1)
+) -> fig.corr
+fig.corr
+```
+
+```{r}
+ragg::agg_jpeg(file.path(fig.dir, "fecal_corr.jpeg"), width = 12, height = 12, units = "in", res = 600)
+fig.corr
+dev.off()
+```
+
+
+# Reproducibility
+
+```{r}
+sessionInfo()
+```
+

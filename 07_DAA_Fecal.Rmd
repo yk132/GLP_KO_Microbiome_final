@@ -345,6 +345,10 @@ I will run Week * Surgery.
 nrow(meta.f.hfd)
 ```
 
+```{r}
+meta.f.hfd %>% distinct(Mouse) %>% nrow()
+```
+
 
 ## Make TSE objects
 
@@ -838,7 +842,7 @@ meta.f.nosurgery %>%
 I will run Diet * Week + Genotype. 
 
 ```{r}
-nrow(meta.f.nosurgery)
+meta.f.nosurgery %>% distinct(Mouse) %>% nrow()
 ```
 
 ## Make TSE objects
@@ -1234,13 +1238,32 @@ for (i in 1:length(ancom.intersect.nosurgery$taxon)) {
   ggplot(aes(x = as.character(Week), y = Abundance, color = Diet)) + 
   geom_boxplot() + geom_point() +  
   labs(y="Relative Abundance", title = str_glue(ancom.intersect.nosurgery$taxon[i], " Relative Abundance, fecal"),
-       x="Weel") + 
+       x="Week") + 
   facet_wrap(~Diet) + 
   theme_bw(base_size = 14) + 
   theme(legend.position = "top") -> p
   print(p)
 }
 ```
+
+
+```{r, fig.width=8, fig.height=5}
+for (i in 1:length(ancom.intersect.nosurgery$taxon)) {
+  fecal.graph.nosurgery %>% 
+  filter(OTU == ancom.intersect.nosurgery$taxon[i]) %>%  
+  ggplot(aes(x = Diet, y = Abundance, color = Diet)) + 
+  geom_boxplot() + geom_point() +  
+  labs(y="Relative Abundance", title = str_glue(ancom.intersect.nosurgery$taxon[i], " Relative Abundance, fecal"),
+       x="Diet") + 
+  facet_wrap(~Week) + 
+  theme_bw(base_size = 14) + 
+  theme(legend.position = "top") + 
+  stat_compare_means(method = "wilcox.test", aes(label = after_stat(p.signif)),
+                     label.x = 1.5) -> p
+  print(p)
+}
+```
+
 
 # Export csv files 
 
