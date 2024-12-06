@@ -420,7 +420,7 @@ Based on literature review, focus on *Lachnospiraceae UCG-001*, *Bifidobacterium
 f.ra.graph %>% 
   filter(taxon == "Lachnospiraceae UCG-001" & Surgery == "None") %>%  # no surgery group!!!! 
   ggplot(aes(x = Week_factor, y = RA)) + 
-  geom_violin() + geom_boxplot(width=0.1) + 
+  geom_boxplot(width=0.2) + geom_point(size = 1) +  
   facet_wrap(vars(Diet))  + 
   labs(y="*Lachnospiraceae UCG-001* Relative Abundance", x = "Week") + 
   theme_bw(base_size = 14)+ 
@@ -436,7 +436,7 @@ fig.lachno.rel
 f.ra.graph %>% 
   filter(taxon == "Bifidobacterium" & Surgery == "None") %>%  # no surgery group!!!! 
   ggplot(aes(x = Week_factor, y = RA)) + 
-  geom_violin() + geom_boxplot(width=0.1) + 
+  geom_boxplot(width=0.2) + geom_point(size = 1) +  
   facet_wrap(vars(Diet))  + 
   labs(y="*Bifidobacterium* Relative Abundance", x = "Week") + 
   theme_bw(base_size = 14) + 
@@ -449,7 +449,7 @@ fig.Bifido.rel
 f.ra.graph %>% 
   filter(taxon == "Parasutterella" & Surgery == "None") %>%  # no surgery group!!!! 
   ggplot(aes(x = Week_factor, y = RA)) + 
-  geom_violin() + geom_boxplot(width=0.1) + 
+  geom_boxplot(width=0.2) + geom_point(size = 1) +  
   facet_wrap(vars(Diet))  + 
   labs(y="*Parasutterella* Relative Abundance", x = "Week") + 
   theme_bw(base_size = 14) + 
