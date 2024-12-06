@@ -326,12 +326,19 @@ micro.corr.res %>% dplyr::rename(Health_metric = var1, row = var2, Metric_Type =
                 Taxon = row) %>% 
   dplyr::mutate(Taxonomic_Rank = factor(Taxonomic_Rank, levels = c("Phylum", "Class", "Order", "Family", "Genus"))) %>% 
   arrange(Taxonomic_Rank, Taxon) -> micro.corr.res
-
-write_csv(micro.corr.res, file.path(git.dir, "Microbiome_corr_res.csv"), append = FALSE, col_names = TRUE)
 ```
 
 ```{r}
-micro.corr.res
+f.nosurgery.intersect %>% filter(row %in% f.hfd.intersect$row)
+```
+
+```{r}
+micro.corr.res %>% filter(Taxon %in% f.hfd.intersect$row)
+```
+
+
+```{r}
+write_csv(micro.corr.res, file.path(git.dir, "Microbiome_corr_res.csv"), append = FALSE, col_names = TRUE)
 ```
 
 ```{r}
@@ -388,8 +395,9 @@ head(f.ra.graph.corr)
 ```
 
 ```{r}
-micro.corr.res
+micro.corr.res %>% filter(str_detect(Taxon, "Lactoba") == TRUE)
 ```
+
 
 ```{r}
 for (i in 1:length(micro.corr.res$Health_metric)) {
