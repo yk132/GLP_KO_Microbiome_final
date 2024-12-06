@@ -56,6 +56,7 @@ library(tidyr)
 library(readr)
 library(tibble)
 library(stringr)
+library(ggtext)
 ```
 
 
@@ -647,8 +648,21 @@ ancom.intersect
 ```
 
 ```{r}
-LT.Q1.deseq %>% filter(row %in% tab.LT.Q1$taxon) %>%
-  distinct(row)
+LT.Q1.deseq %>% filter(row %in% tab.LT.Q1$taxon) 
+```
+
+```{r}
+LT.Q1.deseq %>% filter(row %in% tab.LT.Q1$taxon) %>% 
+  filter(str_detect(Comparison, "Surgery") == TRUE) -> LT.Q1.deseq.intersect.surgery
+
+LT.Q1.deseq.intersect.surgery
+```
+
+```{r}
+LT.Q1.deseq %>% filter(row %in% tab.LT.Q1$taxon) %>% 
+  filter(str_detect(Comparison, "Intranasal ") == TRUE) -> LT.Q1.deseq.intersect.intra
+
+LT.Q1.deseq.intersect.intra
 ```
 
 ## Graph: LT, HFD group
@@ -690,23 +704,23 @@ tail(lt.graph.hfd)
 surgery.labs <- c("No Surgery", "Sham Surgery", "VSG")
 names(surgery.labs) <- c("None", "Sham", "VSG")
 
-for (i in 1:length(ancom.intersect$taxon)) {
+for (i in 1:length(LT.Q1.deseq.intersect.surgery$row)) {
   lt.graph.hfd %>% 
-  filter(OTU == ancom.intersect$taxon[i]) %>%  
+  filter(OTU == LT.Q1.deseq.intersect.surgery$row[i]) %>%  
   ggplot(aes(x = Surgery, y = Abundance, color = Surgery)) + 
-  geom_boxplot() + geom_point() +  
-  labs(y="Relative Abundance", title = str_glue(ancom.intersect$taxon[i], " Relative Abundance, LT; Surgery"),
+  geom_boxplot(width = 0.2) + geom_jitter(height = 0, width = 0.2) +
+  labs(y="Relative Abundance", title = str_glue(LT.Q1.deseq.intersect.surgery$row[i], " Relative Abundance, LT; Surgery"),
        x="Surgery") + 
   theme_bw(base_size = 14) -> p
   print(p)
 }
 
-for (i in 1:length(ancom.intersect$taxon)) {
+for (i in 1:length(LT.Q1.deseq.intersect.intra$row)) {
   lt.graph.hfd %>% 
-  filter(OTU == ancom.intersect$taxon[i]) %>%  
+  filter(OTU == LT.Q1.deseq.intersect.intra$row[i]) %>%  
   ggplot(aes(x = Intranasal_Treatment, y = Abundance, color = Intranasal_Treatment)) + 
-  geom_boxplot() + geom_point() +  
-  labs(y="Relative Abundance", title = str_glue(ancom.intersect$taxon[i], " Relative Abundance, LT; Intranasal Treatment"),
+  geom_boxplot(width = 0.2) + geom_jitter(height = 0, width = 0.2) +
+  labs(y="Relative Abundance", title = str_glue(LT.Q1.deseq.intersect.intra$row[i], " Relative Abundance, LT; Intranasal Treatment"),
        x="Intranasal Treatment") + 
   theme_bw(base_size = 14) -> p
   print(p)
@@ -1006,7 +1020,11 @@ rbind(LT.Q2.Genus.Res,
       LT.Q2.Phylum.Res) -> LT.Q2.deseq
 
 LT.Q2.deseq$Test <- "DESeq2, Lung Tissue: no surgery, intranasal treatment * diet"
+
+LT.Q2.deseq
 ```
+
+## Intersection 
 
 ```{r}
 tab.LT.Q2 %>% filter(taxon %in% LT.Q2.deseq$row) -> ancom.intersect.nosurgery
@@ -1019,7 +1037,7 @@ ancom.intersect.nosurgery
 LT.Q2.deseq %>% filter(row %in% tab.LT.Q2$taxon)
 ```
 
-### Graph 
+## Graph: Intersection
 
 ```{r}
 LT.RA.Full %>% filter(Surgery == "None") -> lt.graph.none
@@ -1028,28 +1046,49 @@ tail(lt.graph.none)
 ```
 
 ```{r}
-for (i in 1:length(ancom.intersect.nosurgery$taxon)) {
-  lt.graph.none %>% 
-  filter(OTU == ancom.intersect.nosurgery$taxon[i]) %>%  
+lt.graph.none %>% 
+  filter(OTU == "Pirellula") %>%  
   ggplot(aes(x = Intranasal_Treatment, y = Abundance, color = Intranasal_Treatment)) + 
-  geom_boxplot() + geom_point() +  
-  labs(y="Relative Abundance", title = str_glue(ancom.intersect.nosurgery$taxon[i], " Relative Abundance, LT; Intranasal treatment"),
+  geom_boxplot(width = 0.2) + geom_jitter(height = 0, width = 0.3) +  
+  labs(y="*Pirellula* Relative Abundance",
        x="Intranasal Treatment") + 
-  theme_bw(base_size = 14) -> p
-  print(p)
-}
+  theme_bw(base_size = 14) + theme(axis.title.y = element_markdown(), title = element_markdown())
 
-for (i in 1:length(ancom.intersect.nosurgery$taxon)) {
-  lt.graph.none %>% 
-  filter(OTU == ancom.intersect.nosurgery$taxon[i]) %>%  
+lt.graph.none %>% 
+  filter(OTU == "Pirellula") %>%  
   ggplot(aes(x = Diet, y = Abundance, color = Diet)) + 
-  geom_boxplot() + geom_point() +  
-  labs(y="Relative Abundance", title = str_glue(ancom.intersect.nosurgery$taxon[i], " Relative Abundance, LT; Diet"),
-       x="Diet") + 
-  theme_bw(base_size = 14) -> p
-  print(p)
-}
+  geom_boxplot(width = 0.2) + geom_jitter(height = 0, width = 0.3) +  
+  labs(y="*Pirellula* Relative Abundance",
+       x="Intranasal Treatment") + 
+  theme_bw(base_size = 14) + theme(axis.title.y = element_markdown(), title = element_markdown())
 ```
+
+```{r}
+lt.graph.none %>% 
+  filter(OTU == "Pseudarcicella") %>%  
+  ggplot(aes(x = Diet, y = Abundance, color = Diet)) + 
+  geom_boxplot(width = 0.2) + geom_jitter(height = 0, width = 0.3) +  
+  labs(y="*Pseudarcicella* Relative Abundance",
+       x="Intranasal Treatment") + 
+  theme_bw(base_size = 14) + theme(axis.title.y = element_markdown(), title = element_markdown())
+
+lt.graph.none %>% 
+  filter(OTU == "Pirellulaceae") %>%  
+  ggplot(aes(x = Diet, y = Abundance, color = Diet)) + 
+  geom_boxplot(width = 0.2) + geom_jitter(height = 0, width = 0.3) +  
+  labs(y="Pirellulaceae Relative Abundance",
+       x="Intranasal Treatment") + 
+  theme_bw(base_size = 14) + theme(axis.title.y = element_markdown(), title = element_markdown())
+
+lt.graph.none %>% 
+  filter(OTU == "Pirellulales") %>%  
+  ggplot(aes(x = Diet, y = Abundance, color = Diet)) + 
+  geom_boxplot(width = 0.2) + geom_jitter(height = 0, width = 0.3) +  
+  labs(y="Pirellulales Relative Abundance",
+       x="Intranasal Treatment") + 
+  theme_bw(base_size = 14) + theme(axis.title.y = element_markdown(), title = element_markdown())
+```
+
 
 Very spurious. This is not worth doing interpretation on; it's unlikely that these spurious differences have biological meaning. 
 
