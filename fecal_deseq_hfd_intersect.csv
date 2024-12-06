@@ -1,2 +1,4 @@
 row,baseMean,log2FoldChange,lfcSE,stat,pvalue,padj,Comparison,Compare_taxon,Test
-Lactobacillaceae,3521.5151883869767,2.3784835410042238,0.6755925415998665,3.5205888084136507,4.3058977446305374e-4,0.006674141504177333,Week: week 13 over week 10,Family,"DESeq2, Fecal microbiome: all HFD, wk 10 + 13, Surgery * Week"
+Lactobacillaceae,3521.5151883869767,1.2399238116808857,0.44463492162657886,2.7886334414421468,0.005293093665439357,0.042344749323514855,"Surgery VSG, wk 13",Family,"DESeq2, Fecal microbiome: all HFD, wk 10 + 13, Surgery * Week + Genotype"
+Lactobacillaceae,3521.5151883869767,2.833235778279456,0.6574473027054496,4.309449238928289,1.636616168780586e-5,5.237171740097875e-4,Week: week 13 over week 10,Family,"DESeq2, Fecal microbiome: all HFD, wk 10 + 13, Surgery * Week + Genotype"
+Lactobacillales,3969.378948456525,2.0751096371557782,0.492956117490273,4.209522031536051,2.559114885473444e-5,3.070937862568133e-4,Week: week 13 over week 10,Order,"DESeq2, Fecal microbiome: all HFD, wk 10 + 13, Surgery * Week + Genotype"
