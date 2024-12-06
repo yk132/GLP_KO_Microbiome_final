@@ -1246,6 +1246,7 @@ for (i in 1:length(ancom.intersect.nosurgery$taxon)) {
 }
 ```
 
+## Graph: by diet 
 
 ```{r, fig.width=8, fig.height=5}
 for (i in 1:length(ancom.intersect.nosurgery$taxon)) {
@@ -1264,6 +1265,49 @@ for (i in 1:length(ancom.intersect.nosurgery$taxon)) {
 }
 ```
 
+
+# Genotype? 
+
+DESeq2 provides more information on the results than ANCOM II does in the sense that you can specifically set the contrast. There were a number of taxa that were differentially abundant based on genotype: 
+
+```{r}
+fecal.Q2.deseq %>% filter(row %in% tab.fecal.Q2$taxon) %>% 
+  filter(str_detect(Comparison, "Genotype") == TRUE) -> nosurgery.genotype
+
+nosurgery.genotype
+```
+
+```{r}
+fecal.Q2.deseq.intersect.wide %>% filter(row %in% nosurgery.genotype$row)
+```
+
+It looks like these taxa were also affected by diet and week. 
+
+```{r, fig.width=8, fig.height=5}
+for (i in 1:length(nosurgery.genotype$row)) {
+  fecal.graph.nosurgery %>% 
+  filter(OTU == nosurgery.genotype$row[i]) %>%  
+  ggplot(aes(x = Genotype, y = Abundance, color = Genotype)) + 
+  geom_boxplot() + geom_point() +  
+  labs(y="Relative Abundance", title = str_glue(nosurgery.genotype$row[i], " Relative Abundance, fecal"),
+       x="Diet") + 
+  facet_grid(vars(Diet), vars(Week)) + 
+  theme_bw(base_size = 14)-> p
+  print(p)
+}
+```
+
+```{r}
+fecal.graph.nosurgery %>% 
+  filter(OTU %in% nosurgery.genotype$row) %>%
+  group_by(OTU, Diet, Week) %>% 
+  filter(sum(Abundance) > 0) %>% # remove groups that are all zeroes 
+  wilcox_test(Abundance ~ Genotype) %>%
+  adjust_pvalue(method = "holm") %>%
+  add_significance()
+```
+
+NS after multiple testing. 
 
 # Export csv files 
 
