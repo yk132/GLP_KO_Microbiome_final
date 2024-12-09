@@ -167,6 +167,16 @@ This dataframe structure is such that the recorded weight matches the fecal samp
 Weight.corr.df %>% colnames()
 ```
 
+```{r}
+corr.df %>% select(Label, Mouse, Week, Weight_g_wk0:Weight_g_wk13) %>%
+  mutate(Weight = case_when(Week == 0 ~ Weight_g_wk0,
+                            Week == 10 ~ Weight_g_wk10,
+                            Week == 13 ~ Weight_g_wk13)) %>%
+  distinct(Mouse) %>% nrow() -> weight.n.mouse
+
+weight.n.mouse
+```
+
 
 ```{r}
 Weight.corr.df %>%
@@ -174,7 +184,8 @@ Weight.corr.df %>%
            vars2 = c("Bifidobacterium":"Verrucomicrobiota"),
            method = "spearman") -> Weight.corr.res 
 
-Weight.corr.res$n <- nrow(Weight.corr.df)
+Weight.corr.res$n_mouse <- weight.n.mouse
+Weight.corr.res$n_feces <- nrow(Weight.corr.df)
 Weight.corr.res$Week <- "0, 10, 13 (aggregated)"
 ```
 
@@ -190,13 +201,22 @@ glucose.df %>% colnames()
 ```
 
 ```{r}
+corr.df %>% filter(is.na(AUC) != TRUE) %>% 
+  distinct(Mouse) %>% nrow() -> glucose.n.mouse
+
+glucose.n.mouse
+```
+
+
+```{r}
 glucose.df %>%
   rstatix::cor_test(vars = c(AUC, MaxPeak, Glucose_min_0),
            vars2 = c("Bifidobacterium":"Verrucomicrobiota"),
            method = "spearman") -> glucose.corr.res
 
-glucose.corr.res$n <- nrow(glucose.df)
-glucose.corr.res$Week <- "0, 10, 13 (aggregated)"
+glucose.corr.res$n_mouse <- glucose.n.mouse
+glucose.corr.res$n_feces <- nrow(glucose.df)
+glucose.corr.res$Week <- "0, 10, 12 (aggregated)"
 ```
 
 
@@ -234,7 +254,9 @@ protein.df %>% pivot_longer(
   names_to = "var1",
   values_to = "value"
 ) %>% filter(is.na(value) == FALSE) %>% 
-  dplyr::count(var1) -> protein.n
+  dplyr::count(var1) %>%
+  dplyr::mutate(n_mouse = n,
+                n_feces = n) %>% dplyr::select(-n)  -> protein.n
 
 protein.n
 ```
@@ -242,6 +264,7 @@ protein.n
 ```{r}
 protein.corr.res$Week <- "13"
 protein.corr.res %>% left_join(protein.n, by = "var1") -> protein.corr.res
+head(protein.corr.res)
 ```
 
 
@@ -264,7 +287,8 @@ diff.corr %>%
            vars2 = c(`Bifidobacterium`:Verrucomicrobiota),
            method = "spearman") -> diff.corr.res
 
-diff.corr.res$n <- nrow(diff.meta.df)
+diff.corr.res$n_feces <- nrow(diff.meta.df)
+diff.corr.res$n_mouse <- nrow(diff.meta.df)
 diff.corr.res$Week <- "13"
 ```
 
@@ -294,8 +318,11 @@ hist.tri.corr %>%
            method = "spearman") -> hist.corr.res
 
 
-hist.corr.res$n <- nrow(hist.tri.corr)
+hist.corr.res$n_mouse <- nrow(hist.tri.corr)
+hist.corr.res$n_feces <- nrow(hist.tri.corr)
 hist.corr.res$Week <- "13"
+
+head(hist.corr.res)
 ```
 
 
@@ -338,12 +365,13 @@ micro.corr.res %>% filter(Taxon %in% f.hfd.intersect$row)
 
 
 ```{r}
-write_csv(micro.corr.res, file.path(git.dir, "Microbiome_corr_res.csv"), append = FALSE, col_names = TRUE)
+micro.corr.res %>% datatable()
 ```
 
 ```{r}
-micro.corr.res %>% datatable()
+write_csv(micro.corr.res, file.path(git.dir, "Microbiome_corr_res.csv"), append = FALSE, col_names = TRUE)
 ```
+
 
 
 ```{r}

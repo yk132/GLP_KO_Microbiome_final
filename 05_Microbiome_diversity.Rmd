@@ -976,7 +976,7 @@ f.richness.hfd %>%
   geom_point() + 
   scale_fill_brewer(palette="RdBu") + 
   labs( y="Alpha Diversity Metric value", color="Surgery", x = "Surgery") + 
-  facet_wrap(vars(Measurement), scales = "free") +
+  facet_wrap(vars(Measurement), scales = "free", labeller = labeller(Measurement = alpha.labs)) +
   theme_bw(base_size = 14)  + expand_limits(y = 0) + theme(legend.position = "top") -> fig.alpha.hfd
 fig.alpha.hfd
 ```

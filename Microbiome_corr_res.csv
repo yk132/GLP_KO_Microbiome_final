@@ -1,243 +1,243 @@
-Health_metric,Taxon,cor,statistic,p,method,n,Week,Metric_Type,p.adj,p.adj.signif,p.adj.print,Taxonomic_Rank
-Weight,Actinobacteriota,-0.36,1210750.1550768286,1.38e-6,Spearman,178,"0, 10, 13 (aggregated)",Weight,1.973720930232558e-5,****,2.0e-05,Phylum
-AUC,Actinobacteriota,-0.5,207780.25286058767,2.68e-7,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,5.68344827586207e-6,****,5.7e-06,Phylum
-MaxPeak,Actinobacteriota,-0.51,208925.89639919598,1.58e-7,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,4.224782608695652e-6,****,4.2e-06,Phylum
-Glucose_min_0,Actinobacteriota,-0.37,189808.511594185,2.29e-4,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,0.0011456854838709678,**,1.1e-03,Phylum
-GLP1_pM,Actinobacteriota,0.41,5420,0.0118,Spearman,38,13,Serum proteins,0.03196916299559471,*,3.2e-02,Phylum
-Leptin_pg_ml,Actinobacteriota,-0.46,13332,0.00411,Spearman,38,13,Serum proteins,0.013335789473684212,*,1.3e-02,Phylum
-Weight,Proteobacteria,-0.4,1246463.1342465137,6.06e-8,Spearman,178,"0, 10, 13 (aggregated)",Weight,2.7513157894736843e-6,****,2.8e-06,Phylum
-AUC,Proteobacteria,-0.49,206654.69757087392,4.46e-7,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,8.139705882352942e-6,****,8.1e-06,Phylum
-MaxPeak,Proteobacteria,-0.52,210217.6345599014,8.5e-8,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,2.7513157894736843e-6,****,2.8e-06,Phylum
-Glucose_min_0,Proteobacteria,-0.43,198330.58434695902,1.32e-5,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,1.0681578947368422e-4,***,1.1e-04,Phylum
-Ghrelin_pg_ml,Proteobacteria,0.65,3232.6793124993274,1.17e-5,Spearman,38,13,Serum proteins,1.0367142857142858e-4,***,1.0e-04,Phylum
-GLP1_pM,Proteobacteria,0.51,4507.122046087259,0.00117,Spearman,38,13,Serum proteins,0.00476523178807947,**,4.8e-03,Phylum
-Leptin_pg_ml,Proteobacteria,-0.6,14648.560213836507,6.19e-5,Spearman,38,13,Serum proteins,3.5913679245283016e-4,***,3.6e-04,Phylum
-PYY_pg_ml,Proteobacteria,0.41,5357.752455533921,0.00982,Spearman,38,13,Serum proteins,0.027204054054054055,*,2.7e-02,Phylum
-Weight,Verrucomicrobiota,-0.34,1198007.1189526431,3.81e-6,Spearman,178,"0, 10, 13 (aggregated)",Weight,4.11078947368421e-5,****,4.1e-05,Phylum
-AUC,Verrucomicrobiota,-0.28,176892.8081142186,0.00667,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,0.01972139423076923,*,2.0e-02,Phylum
-MaxPeak,Verrucomicrobiota,-0.29,178109.93632518768,0.00507,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,0.015668592964824122,*,1.6e-02,Phylum
-Glucose_min_0,Verrucomicrobiota,-0.32,182039.8720517267,0.00197,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,0.00704389534883721,**,7.0e-03,Phylum
-Ghrelin_pg_ml,Verrucomicrobiota,0.39,5589.507594766327,0.016,Spearman,38,13,Serum proteins,0.041171548117154816,*,4.1e-02,Phylum
-GLP1_pM,Verrucomicrobiota,0.42,5274.884982694963,0.00818,Spearman,38,13,Serum proteins,0.023290277777777778,*,2.3e-02,Phylum
-Weight,Actinobacteria,-0.37,1220350.8456262038,6.2e-7,Spearman,178,"0, 10, 13 (aggregated)",Weight,1.0591666666666665e-5,****,1.1e-05,Class
-AUC,Actinobacteria,-0.44,199498.28739687262,8.5e-6,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,8.431451612903226e-5,****,8.4e-05,Class
-MaxPeak,Actinobacteria,-0.48,204278.29911849505,1.25e-6,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,1.830357142857143e-5,****,1.8e-05,Class
-Glucose_min_0,Actinobacteria,-0.33,183903.15693990773,0.00122,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,0.004872077922077922,**,4.9e-03,Class
-Ghrelin_pg_ml,Actinobacteria,0.49,4630.00894381885,0.00165,Spearman,38,13,Serum proteins,0.006004437869822485,**,6.0e-03,Class
-GLP1_pM,Actinobacteria,0.53,4267.252401954576,5.69e-4,Spearman,38,13,Serum proteins,0.0025730514705882353,**,2.6e-03,Class
-Leptin_pg_ml,Actinobacteria,-0.49,13659.424643460537,0.0016,Spearman,38,13,Serum proteins,0.005892215568862275,**,5.9e-03,Class
-Weight,Coriobacteriia,-0.19,1062193.743427194,0.0122,Spearman,178,"0, 10, 13 (aggregated)",Weight,0.032621739130434785,*,3.3e-02,Class
-AUC,Coriobacteriia,-0.5,208151.2595616326,2.26e-7,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,5.2275e-6,****,5.2e-06,Class
-MaxPeak,Coriobacteriia,-0.41,195386.38013106107,3.77e-5,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,2.473085106382979e-4,***,2.5e-04,Class
-Glucose_min_0,Coriobacteriia,-0.37,190163.59112818397,2.06e-4,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,0.00107364406779661,**,1.1e-03,Class
-Weight,Gammaproteobacteria,-0.4,1246745.2677282228,5.9e-8,Spearman,178,"0, 10, 13 (aggregated)",Weight,2.7513157894736843e-6,****,2.8e-06,Class
-AUC,Gammaproteobacteria,-0.49,206654.69757087392,4.46e-7,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,8.139705882352942e-6,****,8.1e-06,Class
-MaxPeak,Gammaproteobacteria,-0.52,210217.6345599014,8.5e-8,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,2.7513157894736843e-6,****,2.8e-06,Class
-Glucose_min_0,Gammaproteobacteria,-0.43,198330.58434695902,1.32e-5,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,1.0681578947368422e-4,***,1.1e-04,Class
-Ghrelin_pg_ml,Gammaproteobacteria,0.65,3234.6831532754095,1.18e-5,Spearman,38,13,Serum proteins,1.0367142857142858e-4,***,1.0e-04,Class
-GLP1_pM,Gammaproteobacteria,0.5,4529.164294624157,0.00124,Spearman,38,13,Serum proteins,0.004896496815286624,**,4.9e-03,Class
-Leptin_pg_ml,Gammaproteobacteria,-0.6,14650.564054612587,6.14e-5,Spearman,38,13,Serum proteins,3.5913679245283016e-4,***,3.6e-04,Class
-PYY_pg_ml,Gammaproteobacteria,0.42,5333.706366220942,0.00932,Spearman,38,13,Serum proteins,0.025935746606334843,*,2.6e-02,Class
-Weight,Verrucomicrobiae,-0.34,1198007.1189526431,3.81e-6,Spearman,178,"0, 10, 13 (aggregated)",Weight,4.11078947368421e-5,****,4.1e-05,Class
-AUC,Verrucomicrobiae,-0.28,176892.8081142186,0.00667,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,0.01972139423076923,*,2.0e-02,Class
-MaxPeak,Verrucomicrobiae,-0.29,178109.93632518768,0.00507,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,0.015668592964824122,*,1.6e-02,Class
-Glucose_min_0,Verrucomicrobiae,-0.32,182039.8720517267,0.00197,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,0.00704389534883721,**,7.0e-03,Class
-Ghrelin_pg_ml,Verrucomicrobiae,0.39,5589.507594766327,0.016,Spearman,38,13,Serum proteins,0.041171548117154816,*,4.1e-02,Class
-GLP1_pM,Verrucomicrobiae,0.42,5274.884982694963,0.00818,Spearman,38,13,Serum proteins,0.023290277777777778,*,2.3e-02,Class
-Weight,Bifidobacteriales,-0.38,1235997.1776551453,1.58e-7,Spearman,178,"0, 10, 13 (aggregated)",Weight,4.224782608695652e-6,****,4.2e-06,Order
-AUC,Bifidobacteriales,-0.44,199136.8298410145,9.75e-6,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,9.310153846153848e-5,****,9.3e-05,Order
-MaxPeak,Bifidobacteriales,-0.47,203897.5896864639,1.47e-6,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,2.0546590909090908e-5,****,2.1e-05,Order
-Glucose_min_0,Bifidobacteriales,-0.33,183956.19726732644,0.0012,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,0.004823529411764706,**,4.8e-03,Order
-Ghrelin_pg_ml,Bifidobacteriales,0.43,5165.442467663178,0.00637,Spearman,38,13,Serum proteins,0.019017233009708735,*,1.9e-02,Order
-GLP1_pM,Bifidobacteriales,0.52,4388.076274885014,8.23e-4,Spearman,38,13,Serum proteins,0.003490655172413793,**,3.5e-03,Order
-Leptin_pg_ml,Bifidobacteriales,-0.53,13952.324548752962,6.81e-4,Spearman,38,13,Serum proteins,0.0029915357142857144,**,3.0e-03,Order
-Weight,Burkholderiales,-0.39,1242828.4566049192,8.49e-8,Spearman,178,"0, 10, 13 (aggregated)",Weight,2.7513157894736843e-6,****,2.8e-06,Order
-AUC,Burkholderiales,-0.49,206909.09396227347,3.98e-7,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,7.895806451612903e-6,****,7.9e-06,Order
-MaxPeak,Burkholderiales,-0.52,210763.73749903942,6.51e-8,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,2.7513157894736843e-6,****,2.8e-06,Order
-Glucose_min_0,Burkholderiales,-0.44,198847.75974273297,1.09e-5,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,9.85808823529412e-5,****,9.9e-05,Order
-Ghrelin_pg_ml,Burkholderiales,0.63,3360.9251221685536,2.06e-5,Spearman,38,13,Serum proteins,1.490470588235294e-4,***,1.5e-04,Order
-GLP1_pM,Burkholderiales,0.5,4561.225747041463,0.00136,Spearman,38,13,Serum proteins,0.005131288343558283,**,5.1e-03,Order
-Leptin_pg_ml,Burkholderiales,-0.61,14686.633188582056,5.33e-5,Spearman,38,13,Serum proteins,3.245495049504951e-4,***,3.2e-04,Order
-PYY_pg_ml,Burkholderiales,0.4,5520.063558396534,0.0139,Spearman,38,13,Serum proteins,0.03637659574468085,*,3.6e-02,Order
-Weight,Clostridia UCG-014,-0.2,1074183.6341085962,0.00716,Spearman,178,"0, 10, 13 (aggregated)",Weight,0.020968571428571427,*,2.1e-02,Order
-Leptin_pg_ml,Clostridia UCG-014,-0.42,12985.33567372629,0.00851,Spearman,38,13,Serum proteins,0.024007568807339452,*,2.4e-02,Order
-Weight,Oscillospirales,0.35,584933.9956411272,2.91e-6,Spearman,178,"0, 10, 13 (aggregated)",Weight,3.314166666666667e-5,****,3.3e-05,Order
-AUC,Oscillospirales,0.41,81056.96401123455,3.29e-5,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,2.2481666666666667e-4,***,2.2e-04,Order
-MaxPeak,Oscillospirales,0.4,82893.78227023866,6.16e-5,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,3.5913679245283016e-4,***,3.6e-04,Order
-Ghrelin_pg_ml,Oscillospirales,-0.49,13620,0.00201,Spearman,38,13,Serum proteins,0.007145375722543353,**,7.1e-03,Order
-GLP1_pM,Oscillospirales,-0.4,12785.999999999998,0.0136,Spearman,38,13,Serum proteins,0.03620779220779221,*,3.6e-02,Order
-Leptin_pg_ml,Oscillospirales,0.54,4182.000000000001,5.31e-4,Spearman,38,13,Serum proteins,0.002450820895522388,**,2.5e-03,Order
-AUC,Peptostreptococcales-Tissierellales,0.26,102767.88735384431,0.0122,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,0.032621739130434785,*,3.3e-02,Order
-MaxPeak,Peptostreptococcales-Tissierellales,0.28,100222.7243399693,0.00711,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,0.02092177033492823,*,2.1e-02,Order
-Weight,Atopobiaceae,-0.32,1176357.1135634568,1.92e-5,Spearman,178,"0, 10, 13 (aggregated)",Weight,1.4226506024096384e-4,***,1.4e-04,Family
-AUC,Atopobiaceae,-0.47,203345.60379123667,1.85e-6,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,2.420744680851064e-5,****,2.4e-05,Family
-MaxPeak,Atopobiaceae,-0.37,190291.0578970534,1.98e-4,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,0.0010407692307692307,**,1.0e-03,Family
-Glucose_min_0,Atopobiaceae,-0.38,191649.9523627453,1.3e-4,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,7.138392857142856e-4,***,7.1e-04,Family
-Ghrelin_pg_ml,Atopobiaceae,0.45,5040.443826033959,0.00474,Spearman,38,13,Serum proteins,0.01510414507772021,*,1.5e-02,Family
-GLP1_pM,Atopobiaceae,0.51,4516.1258868814175,0.0012,Spearman,38,13,Serum proteins,0.004823529411764706,**,4.8e-03,Family
-Leptin_pg_ml,Atopobiaceae,-0.53,14024.033082694854,5.46e-4,Spearman,38,13,Serum proteins,0.0024873333333333336,**,2.5e-03,Family
-Weight,Bifidobacteriaceae,-0.38,1234678.3127653613,1.78e-7,Spearman,178,"0, 10, 13 (aggregated)",Weight,4.56125e-6,****,4.6e-06,Family
-AUC,Bifidobacteriaceae,-0.43,198516.35736557632,1.23e-5,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,1.050625e-4,***,1.1e-04,Family
-MaxPeak,Bifidobacteriaceae,-0.47,203692.42230363423,1.6e-6,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,2.1866666666666665e-5,****,2.2e-05,Family
-Glucose_min_0,Bifidobacteriaceae,-0.33,183727.8726923837,0.00128,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,0.004950943396226416,**,5.0e-03,Family
-Ghrelin_pg_ml,Bifidobacteriaceae,0.44,5131.597953147667,0.00589,Spearman,38,13,Serum proteins,0.01784408866995074,*,1.8e-02,Family
-GLP1_pM,Bifidobacteriaceae,0.52,4385.960992727794,8.17e-4,Spearman,38,13,Serum proteins,0.0034892708333333334,**,3.5e-03,Family
-Leptin_pg_ml,Bifidobacteriaceae,-0.53,13967.131523853495,6.51e-4,Spearman,38,13,Serum proteins,0.002880323741007194,**,2.9e-03,Family
-Weight,Enterococcaceae,0.35,583662.9742791294,2.63e-6,Spearman,178,"0, 10, 13 (aggregated)",Weight,3.2349e-5,****,3.2e-05,Family
-MaxPeak,Enterococcaceae,0.26,102475.54700117801,0.0115,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,0.031433333333333334,*,3.1e-02,Family
-Ghrelin_pg_ml,Enterococcaceae,-0.48,13539.28592078537,0.00221,Spearman,38,13,Serum proteins,0.007722443181818182,**,7.7e-03,Family
-GLP1_pM,Enterococcaceae,-0.52,13877.380123118544,8.54e-4,Spearman,38,13,Serum proteins,0.003597328767123288,**,3.6e-03,Family
-Leptin_pg_ml,Enterococcaceae,0.59,3746.701150213096,9.67e-5,Spearman,38,13,Serum proteins,5.506527777777778e-4,***,5.5e-04,Family
-PYY_pg_ml,Enterococcaceae,-0.43,13035.181391558062,0.00761,Spearman,38,13,Serum proteins,0.022076179245283017,*,2.2e-02,Family
-Glucose_min_0,Erysipelatoclostridiaceae,-0.25,173458.5597833611,0.0138,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,0.03637659574468085,*,3.6e-02,Family
-GLP1_pM,Erysipelatoclostridiaceae,0.64,3328.4506757704767,1.79e-5,Spearman,38,13,Serum proteins,1.3760625e-4,***,1.4e-04,Family
-Leptin_pg_ml,Erysipelatoclostridiaceae,-0.5,13715.324808564086,0.00136,Spearman,38,13,Serum proteins,0.005131288343558283,**,5.1e-03,Family
-Weight,Lactobacillaceae,-0.23,1094854.3865180511,0.00266,Spearman,178,"0, 10, 13 (aggregated)",Weight,0.009088333333333334,**,9.1e-03,Family
-AUC,Lactobacillaceae,-0.3,180420.7586991665,0.00295,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,0.009968406593406594,**,1.0e-02,Family
-Ghrelin_pg_ml,Lactobacillaceae,0.41,5418.000000000001,0.0117,Spearman,38,13,Serum proteins,0.03183849557522124,*,3.2e-02,Family
-Weight,Peptostreptococcaceae,0.22,696360.2829452518,0.00338,Spearman,178,"0, 10, 13 (aggregated)",Weight,0.011236216216216215,*,1.1e-02,Family
-AUC,Peptostreptococcaceae,0.33,93012.17834313744,0.00125,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,0.004896496815286624,**,4.9e-03,Family
-MaxPeak,Peptostreptococcaceae,0.37,87045.40407874259,2.31e-4,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,0.0011456854838709678,**,1.1e-03,Family
-GLP1_pM,Peptostreptococcaceae,-0.45,13220.675103688205,0.00494,Spearman,38,13,Serum proteins,0.015421827411167512,*,1.5e-02,Family
-PYY_pg_ml,Peptostreptococcaceae,-0.42,12968.61300478565,0.00883,Spearman,38,13,Serum proteins,0.024683863636363636,*,2.5e-02,Family
-Weight,Prevotellaceae,-0.38,1236474.038688447,1.52e-7,Spearman,178,"0, 10, 13 (aggregated)",Weight,4.224782608695652e-6,****,4.2e-06,Family
-AUC,Prevotellaceae,-0.37,189721.66285458163,2.35e-4,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,0.0011562,**,1.2e-03,Family
-MaxPeak,Prevotellaceae,-0.43,197683.59356611583,1.67e-5,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,1.3167307692307691e-4,***,1.3e-04,Family
-Glucose_min_0,Prevotellaceae,-0.27,176363.1311006871,0.0075,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,0.021860189573459712,*,2.2e-02,Family
-Ghrelin_pg_ml,Prevotellaceae,0.57,3919.6284428768236,1.81e-4,Spearman,38,13,Serum proteins,9.679565217391305e-4,***,9.7e-04,Family
-GLP1_pM,Prevotellaceae,0.64,3254.7811955840502,1.29e-5,Spearman,38,13,Serum proteins,1.0681578947368422e-4,***,1.1e-04,Family
-Leptin_pg_ml,Prevotellaceae,-0.64,15027.49434941462,1.27e-5,Spearman,38,13,Serum proteins,1.0681578947368422e-4,***,1.1e-04,Family
-Weight,Streptococcaceae,0.46,483023.4771169473,1.64e-10,Spearman,178,"0, 10, 13 (aggregated)",Weight,4.141e-8,****,4.1e-08,Family
-AUC,Streptococcaceae,0.36,88131.92836938436,3.2e-4,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,0.001513846153846154,**,1.5e-03,Family
-MaxPeak,Streptococcaceae,0.42,80378.7688379966,2.6e-5,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,1.796629213483146e-4,***,1.8e-04,Family
-Glucose_min_0,Streptococcaceae,0.29,98505.70400602971,0.00483,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,0.015233076923076922,*,1.5e-02,Family
-Per_Eos,Streptococcaceae,-0.58,2806.8643693559716,0.00425,Spearman,43,13,% immune cells; HDM,0.013684554973821992,*,1.4e-02,Family
-Ghrelin_pg_ml,Streptococcaceae,-0.62,14761.67862597391,3.95e-5,Spearman,38,13,Serum proteins,2.5304687499999996e-4,***,2.5e-04,Family
-GLP1_pM,Streptococcaceae,-0.48,13489.616168489389,0.00252,Spearman,38,13,Serum proteins,0.008658100558659218,**,8.7e-03,Family
-Leptin_pg_ml,Streptococcaceae,0.61,3557.9783714357277,4.67e-5,Spearman,38,13,Serum proteins,2.9306632653061226e-4,***,2.9e-04,Family
-Weight,Sutterellaceae,-0.39,1243372.0045496293,8.08e-8,Spearman,178,"0, 10, 13 (aggregated)",Weight,2.7513157894736843e-6,****,2.8e-06,Family
-AUC,Sutterellaceae,-0.5,207191.1561199767,3.51e-7,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,7.1955e-6,****,7.2e-06,Family
-MaxPeak,Sutterellaceae,-0.52,210669.7079477728,6.82e-8,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,2.7513157894736843e-6,****,2.8e-06,Family
-Glucose_min_0,Sutterellaceae,-0.44,199110.87189550232,9.84e-6,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,9.310153846153848e-5,****,9.3e-05,Family
-Ghrelin_pg_ml,Sutterellaceae,0.63,3360.9251221685536,2.06e-5,Spearman,38,13,Serum proteins,1.490470588235294e-4,***,1.5e-04,Family
-GLP1_pM,Sutterellaceae,0.5,4561.225747041463,0.00136,Spearman,38,13,Serum proteins,0.005131288343558283,**,5.1e-03,Family
-Leptin_pg_ml,Sutterellaceae,-0.61,14686.633188582056,5.33e-5,Spearman,38,13,Serum proteins,3.245495049504951e-4,***,3.2e-04,Family
-PYY_pg_ml,Sutterellaceae,0.4,5520.063558396534,0.0139,Spearman,38,13,Serum proteins,0.03637659574468085,*,3.6e-02,Family
-Weight,[Eubacterium] coprostanoligenes group,-0.37,1221379.6758359775,5.68e-7,Spearman,178,"0, 10, 13 (aggregated)",Weight,9.98057142857143e-6,****,1.0e-05,Family
-AUC,[Eubacterium] coprostanoligenes group,-0.32,183125.47662191442,0.0015,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,0.005590909090909091,**,5.6e-03,Family
-C_peptide_pg_ml,[Eubacterium] coprostanoligenes group,-0.42,9272.931765954563,0.0142,Spearman,34,13,Serum proteins,0.037004237288135594,*,3.7e-02,Family
-Ghrelin_pg_ml,[Eubacterium] coprostanoligenes group,0.63,3374.4050395933155,2.18e-5,Spearman,38,13,Serum proteins,1.5410344827586207e-4,***,1.5e-04,Family
-GLP1_pM,[Eubacterium] coprostanoligenes group,0.55,4079.387383089728,3.11e-4,Spearman,38,13,Serum proteins,0.0014826744186046512,**,1.5e-03,Family
-Leptin_pg_ml,[Eubacterium] coprostanoligenes group,-0.63,14913.61840604881,2.09e-5,Spearman,38,13,Serum proteins,1.494593023255814e-4,***,1.5e-04,Family
-Weight,Acetatifactor,0.28,639632.5383589079,1.41e-4,Spearman,178,"0, 10, 13 (aggregated)",Weight,7.606578947368421e-4,***,7.6e-04,Genus
-MaxPeak,Acetatifactor,0.28,99705.67658431725,0.00634,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,0.019017233009708735,*,1.9e-02,Genus
-Ghrelin_pg_ml,Acetatifactor,-0.65,15073.99353632288,1.03e-5,Spearman,38,13,Serum proteins,9.597727272727272e-5,****,9.6e-05,Genus
-GLP1_pM,Acetatifactor,-0.49,13660.687700782677,0.00159,Spearman,38,13,Serum proteins,0.005890662650602409,**,5.9e-03,Genus
-Leptin_pg_ml,Acetatifactor,0.56,3982.494075215813,2.25e-4,Spearman,38,13,Serum proteins,0.0011435950413223141,**,1.1e-03,Genus
-Weight,Bifidobacterium,-0.39,1240662.2028457911,1.04e-7,Spearman,178,"0, 10, 13 (aggregated)",Weight,3.198e-6,****,3.2e-06,Genus
-AUC,Bifidobacterium,-0.44,199763.3360844472,7.69e-6,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,7.753032786885245e-5,****,7.8e-05,Genus
-MaxPeak,Bifidobacterium,-0.48,205329.73847641205,7.99e-7,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,1.2599615384615386e-5,****,1.3e-05,Genus
-Glucose_min_0,Bifidobacterium,-0.34,184839.3205131403,9.51e-4,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,0.0039786734693877555,**,4.0e-03,Genus
-Ghrelin_pg_ml,Bifidobacterium,0.44,5101.984002946593,0.0055,Spearman,38,13,Serum proteins,0.016745049504950493,*,1.7e-02,Genus
-GLP1_pM,Bifidobacterium,0.52,4362.69288899838,7.62e-4,Spearman,38,13,Serum proteins,0.0033002112676056338,**,3.3e-03,Genus
-Leptin_pg_ml,Bifidobacterium,-0.53,14003.091320526228,5.83e-4,Spearman,38,13,Serum proteins,0.002617116788321168,**,2.6e-03,Genus
-Weight,Butyricicoccus,-0.21,1077603.4084397044,0.00612,Spearman,178,"0, 10, 13 (aggregated)",Weight,0.018449999999999998,*,1.8e-02,Genus
-MaxPeak,Butyricicoccus,-0.3,179520.82646776896,0.00365,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,0.012004010695187165,*,1.2e-02,Genus
-Weight,Candidatus Arthromitus,-0.3,1160194.0929044785,5.86e-5,Spearman,178,"0, 10, 13 (aggregated)",Weight,3.4989320388349515e-4,***,3.5e-04,Genus
-AUC,Candidatus Arthromitus,-0.3,180206.4272104629,0.0031,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,0.01036141304347826,*,1.0e-02,Genus
-MaxPeak,Candidatus Arthromitus,-0.33,183685.1226295367,0.00129,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,0.004958437499999999,**,5.0e-03,Genus
-Ghrelin_pg_ml,Candidatus Arthromitus,0.44,5091.059693545553,0.00535,Spearman,38,13,Serum proteins,0.01645125,*,1.6e-02,Genus
-GLP1_pM,Candidatus Arthromitus,0.49,4629.994786778803,0.00165,Spearman,38,13,Serum proteins,0.006004437869822485,**,6.0e-03,Genus
-Leptin_pg_ml,Candidatus Arthromitus,-0.41,12914.492861546822,0.00994,Spearman,38,13,Serum proteins,0.02741300448430493,*,2.7e-02,Genus
-GLP1_pM,Candidatus Stoquefichus,0.57,3975.2004979791163,2.19e-4,Spearman,38,13,Serum proteins,0.0011223750000000001,**,1.1e-03,Genus
-Leptin_pg_ml,Candidatus Stoquefichus,-0.53,13947.4699449302,6.92e-4,Spearman,38,13,Serum proteins,0.0030182978723404257,**,3.0e-03,Genus
-Weight,Coriobacteriaceae UCG-002,-0.32,1180252.2890336055,1.45e-5,Spearman,178,"0, 10, 13 (aggregated)",Weight,1.158116883116883e-4,***,1.2e-04,Genus
-AUC,Coriobacteriaceae UCG-002,-0.48,204315.89795991394,1.23e-6,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,1.830357142857143e-5,****,1.8e-05,Genus
-MaxPeak,Coriobacteriaceae UCG-002,-0.38,191640.9850435965,1.3e-4,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,7.138392857142856e-4,***,7.1e-04,Genus
-Glucose_min_0,Coriobacteriaceae UCG-002,-0.39,192325.9930912997,1.04e-4,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,5.867889908256881e-4,***,5.9e-04,Genus
-Ghrelin_pg_ml,Coriobacteriaceae UCG-002,0.47,4858.790366800009,0.00302,Spearman,38,13,Serum proteins,0.010149180327868853,*,1.0e-02,Genus
-GLP1_pM,Coriobacteriaceae UCG-002,0.5,4540.896813140593,0.00128,Spearman,38,13,Serum proteins,0.004950943396226416,**,5.0e-03,Genus
-Leptin_pg_ml,Coriobacteriaceae UCG-002,-0.55,14209.815029638668,3e-4,Spearman,38,13,Serum proteins,0.00144140625,**,1.4e-03,Genus
-Weight,Lachnospiraceae UCG-001,-0.36,1215586.9934279101,9.25e-7,Spearman,178,"0, 10, 13 (aggregated)",Weight,1.4221875e-5,****,1.4e-05,Genus
-AUC,Lachnospiraceae UCG-001,-0.4,193592.13128219228,6.91e-5,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,3.9716355140186917e-4,***,4.0e-04,Genus
-MaxPeak,Lachnospiraceae UCG-001,-0.44,199146.74691194063,9.71e-6,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,9.310153846153848e-5,****,9.3e-05,Genus
-Glucose_min_0,Lachnospiraceae UCG-001,-0.41,195658.4394339332,3.43e-5,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,2.2928804347826089e-4,***,2.3e-04,Genus
-Ghrelin_pg_ml,Lachnospiraceae UCG-001,0.62,3505.8742247699324,3.78e-5,Spearman,38,13,Serum proteins,2.473085106382979e-4,***,2.5e-04,Genus
-GLP1_pM,Lachnospiraceae UCG-001,0.42,5271.066726057911,0.00811,Spearman,38,13,Serum proteins,0.023290277777777778,*,2.3e-02,Genus
-Leptin_pg_ml,Lachnospiraceae UCG-001,-0.65,15069.214493521495,1.05e-5,Spearman,38,13,Serum proteins,9.638059701492537e-5,****,9.6e-05,Genus
-Weight,Lactococcus,0.47,475228.2399665136,6.59e-11,Spearman,178,"0, 10, 13 (aggregated)",Weight,4.05285e-8,****,4.1e-08,Genus
-AUC,Lactococcus,0.46,75149.20897388995,3.64e-6,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,4.0701818181818177e-5,****,4.1e-05,Genus
-MaxPeak,Lactococcus,0.52,65935.44987188136,6.11e-8,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,2.7513157894736843e-6,****,2.8e-06,Genus
-Glucose_min_0,Lactococcus,0.31,95703.0165322334,0.00248,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,0.008616949152542373,**,8.6e-03,Genus
-C_peptide_pg_ml,Lactococcus,0.41,3882.502909545898,0.017,Spearman,34,13,Serum proteins,0.043562500000000004,*,4.4e-02,Genus
-Ghrelin_pg_ml,Lactococcus,-0.68,15341.746906816668,2.82e-6,Spearman,38,13,Serum proteins,3.314166666666667e-5,****,3.3e-05,Genus
-GLP1_pM,Lactococcus,-0.54,14063.358952215129,4.83e-4,Spearman,38,13,Serum proteins,0.002250340909090909,**,2.3e-03,Genus
-Leptin_pg_ml,Lactococcus,0.68,2897.7731881953255,2.31e-6,Spearman,38,13,Serum proteins,2.9494897959183673e-5,****,2.9e-05,Genus
-Weight,Marvinbryantia,-0.28,1140453.4714336484,2.09e-4,Spearman,178,"0, 10, 13 (aggregated)",Weight,0.001080126050420168,**,1.1e-03,Genus
-AUC,Marvinbryantia,-0.35,186327.3731350073,6.32e-4,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,0.0028165217391304346,**,2.8e-03,Genus
-MaxPeak,Marvinbryantia,-0.33,184663.55943722939,9.97e-4,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,0.0040999999999999995,**,4.1e-03,Genus
-Ghrelin_pg_ml,Marvinbryantia,0.48,4710.044054774578,0.00205,Spearman,38,13,Serum proteins,0.007245689655172414,**,7.2e-03,Genus
-GLP1_pM,Marvinbryantia,0.45,5042.657502902281,0.00477,Spearman,38,13,Serum proteins,0.015121391752577318,*,1.5e-02,Genus
-Leptin_pg_ml,Marvinbryantia,-0.48,13562.758860098425,0.00208,Spearman,38,13,Serum proteins,0.007309714285714285,**,7.3e-03,Genus
-Weight,Muribaculum,-0.44,1288421.485527497,8.74e-10,Spearman,178,"0, 10, 13 (aggregated)",Weight,1.343775e-7,****,1.3e-07,Genus
-AUC,Muribaculum,-0.5,208106.37792214422,2.31e-7,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,5.2275e-6,****,5.2e-06,Genus
-MaxPeak,Muribaculum,-0.52,210782.62892156615,6.45e-8,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,2.7513157894736843e-6,****,2.8e-06,Genus
-Glucose_min_0,Muribaculum,-0.39,192202.94154335858,1.09e-4,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,6.094090909090909e-4,***,6.1e-04,Genus
-C_peptide_pg_ml,Muribaculum,-0.54,10079.918208265988,9.77e-4,Spearman,34,13,Serum proteins,0.004059831081081081,**,4.1e-03,Genus
-Ghrelin_pg_ml,Muribaculum,0.49,4662.396814954636,0.0018,Spearman,38,13,Serum proteins,0.006511764705882353,**,6.5e-03,Genus
-GLP1_pM,Muribaculum,0.45,5032.229670006045,0.00465,Spearman,38,13,Serum proteins,0.014894531249999999,*,1.5e-02,Genus
-Leptin_pg_ml,Muribaculum,-0.69,15442.414925107,1.67e-6,Spearman,38,13,Serum proteins,2.232717391304348e-5,****,2.2e-05,Genus
-Weight,Parasutterella,-0.4,1246764.1222194275,5.89e-8,Spearman,178,"0, 10, 13 (aggregated)",Weight,2.7513157894736843e-6,****,2.8e-06,Genus
-AUC,Parasutterella,-0.49,206636.28032597006,4.5e-7,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,8.139705882352942e-6,****,8.1e-06,Genus
-MaxPeak,Parasutterella,-0.52,210582.9413971953,7.12e-8,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,2.7513157894736843e-6,****,2.8e-06,Genus
-Glucose_min_0,Parasutterella,-0.43,198532.34245373588,1.22e-5,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,1.050625e-4,***,1.1e-04,Genus
-Ghrelin_pg_ml,Parasutterella,0.63,3340.8867144077362,1.89e-5,Spearman,38,13,Serum proteins,1.4226506024096384e-4,***,1.4e-04,Genus
-GLP1_pM,Parasutterella,0.5,4593.28719945877,0.00149,Spearman,38,13,Serum proteins,0.0055875000000000005,**,5.6e-03,Genus
-Leptin_pg_ml,Parasutterella,-0.61,14676.613984701647,5.54e-5,Spearman,38,13,Serum proteins,3.3402941176470584e-4,***,3.3e-04,Genus
-PYY_pg_ml,Parasutterella,0.38,5636.28632340927,0.0175,Spearman,38,13,Serum proteins,0.04465767634854772,*,4.5e-02,Genus
-Weight,Prevotellaceae NK3B31 group,-0.42,1270331.8201431662,5.89e-9,Spearman,178,"0, 10, 13 (aggregated)",Weight,7.2447e-7,****,7.2e-07,Genus
-AUC,Prevotellaceae NK3B31 group,-0.37,189277.41806300197,2.69e-4,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,0.0013026377952755905,**,1.3e-03,Genus
-MaxPeak,Prevotellaceae NK3B31 group,-0.33,184651.50453961352,0.001,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,0.0040999999999999995,**,4.1e-03,Genus
-Glucose_min_0,Prevotellaceae NK3B31 group,-0.31,181088.87667608724,0.0025,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,0.008637640449438202,**,8.6e-03,Genus
-C_peptide_pg_ml,Prevotellaceae NK3B31 group,-0.41,9256.664037929366,0.0148,Spearman,34,13,Serum proteins,0.03840506329113924,*,3.8e-02,Genus
-Ghrelin_pg_ml,Prevotellaceae NK3B31 group,0.64,3328.5899862418896,1.79e-5,Spearman,38,13,Serum proteins,1.3760625e-4,***,1.4e-04,Genus
-GLP1_pM,Prevotellaceae NK3B31 group,0.62,3514.661578564807,3.92e-5,Spearman,38,13,Serum proteins,2.5304687499999996e-4,***,2.5e-04,Genus
-Leptin_pg_ml,Prevotellaceae NK3B31 group,-0.66,15197.144866327579,5.77e-6,Spearman,38,13,Serum proteins,6.0144915254237287e-5,****,6.0e-05,Genus
-Weight,Prevotellaceae UCG-001,-0.36,1218753.6456870025,7.1e-7,Spearman,178,"0, 10, 13 (aggregated)",Weight,1.149078947368421e-5,****,1.1e-05,Genus
-AUC,Prevotellaceae UCG-001,-0.36,188289.60859941563,3.61e-4,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,0.0016947709923664123,**,1.7e-03,Genus
-MaxPeak,Prevotellaceae UCG-001,-0.46,202249.77222545198,2.9e-6,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,3.314166666666667e-5,****,3.3e-05,Genus
-Glucose_min_0,Prevotellaceae UCG-001,-0.26,174082.32023996545,0.0122,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,0.032621739130434785,*,3.3e-02,Genus
-Ghrelin_pg_ml,Prevotellaceae UCG-001,0.54,4246.707635274876,5.34e-4,Spearman,38,13,Serum proteins,0.002450820895522388,**,2.5e-03,Genus
-GLP1_pM,Prevotellaceae UCG-001,0.62,3477.109535514752,3.36e-5,Spearman,38,13,Serum proteins,2.2707692307692305e-4,***,2.3e-04,Genus
-Leptin_pg_ml,Prevotellaceae UCG-001,-0.63,14935.57013194327,1.9e-5,Spearman,38,13,Serum proteins,1.4226506024096384e-4,***,1.4e-04,Genus
-PYY_pg_ml,Prevotellaceae UCG-001,0.38,5670.4641198311065,0.0188,Spearman,38,13,Serum proteins,0.047776859504132234,*,4.8e-02,Genus
-Weight,Rikenella,0.34,589649.072185199,4.2e-6,Spearman,178,"0, 10, 13 (aggregated)",Weight,4.453448275862069e-5,****,4.5e-05,Genus
-AUC,Rikenella,0.41,81644.97463175852,4.04e-5,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,2.561443298969072e-4,***,2.6e-04,Genus
-MaxPeak,Rikenella,0.42,80207.48143583104,2.44e-5,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,1.7052272727272728e-4,***,1.7e-04,Genus
-Glucose_min_0,Rikenella,0.3,97295.7897388785,0.00364,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,0.012004010695187165,*,1.2e-02,Genus
-Ghrelin_pg_ml,Rikenella,-0.57,14340,2.48e-4,Spearman,38,13,Serum proteins,0.0012104761904761906,**,1.2e-03,Genus
-Leptin_pg_ml,Rikenella,0.73,2442.0000000000005,7.05e-7,Spearman,38,13,Serum proteins,1.149078947368421e-5,****,1.1e-05,Genus
-Weight,Rikenellaceae RC9 gut group,0.41,525901.0713066086,1.58e-8,Spearman,178,"0, 10, 13 (aggregated)",Weight,1.6195e-6,****,1.6e-06,Genus
-AUC,Rikenellaceae RC9 gut group,0.41,82330.75365580879,5.1e-5,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,3.168181818181818e-4,***,3.2e-04,Genus
-MaxPeak,Rikenellaceae RC9 gut group,0.46,74064.61458879225,2.35e-6,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,2.9494897959183673e-5,****,2.9e-05,Genus
-Glucose_min_0,Rikenellaceae RC9 gut group,0.3,96240.66144329477,0.00283,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,0.00961574585635359,**,9.6e-03,Genus
-Per_Eos,Rikenellaceae RC9 gut group,-0.52,2685.032805760088,0.0139,Spearman,43,13,% immune cells; HDM,0.03637659574468085,*,3.6e-02,Genus
-Ghrelin_pg_ml,Rikenellaceae RC9 gut group,-0.43,13027.913493654296,0.00773,Spearman,38,13,Serum proteins,0.022319014084507042,*,2.2e-02,Genus
-GLP1_pM,Rikenellaceae RC9 gut group,-0.42,12998.779292849342,0.00826,Spearman,38,13,Serum proteins,0.023409677419354836,*,2.3e-02,Genus
-Leptin_pg_ml,Rikenellaceae RC9 gut group,0.66,3130.322240881857,7.3e-6,Spearman,38,13,Serum proteins,7.4825e-5,****,7.5e-05,Genus
-Weight,Romboutsia,0.22,698501.9242063285,0.00376,Spearman,178,"0, 10, 13 (aggregated)",Weight,0.0123,*,1.2e-02,Genus
-AUC,Romboutsia,0.33,93028.25495373663,0.00125,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,0.004896496815286624,**,4.9e-03,Genus
-MaxPeak,Romboutsia,0.37,87037.98340760918,2.3e-4,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,0.0011456854838709678,**,1.1e-03,Genus
-GLP1_pM,Romboutsia,-0.45,13220.675103688205,0.00494,Spearman,38,13,Serum proteins,0.015421827411167512,*,1.5e-02,Genus
-PYY_pg_ml,Romboutsia,-0.42,12968.61300478565,0.00883,Spearman,38,13,Serum proteins,0.024683863636363636,*,2.5e-02,Genus
-Weight,Tuzzerella,0.46,484866.18272077845,2.02e-10,Spearman,178,"0, 10, 13 (aggregated)",Weight,4.141e-8,****,4.1e-08,Genus
-AUC,Tuzzerella,0.5,68785.84138655008,2.38e-7,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,5.2275e-6,****,5.2e-06,Genus
-MaxPeak,Tuzzerella,0.52,65812.58389486778,5.75e-8,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,2.7513157894736843e-6,****,2.8e-06,Genus
-Glucose_min_0,Tuzzerella,0.38,86381.92705004358,1.89e-4,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,0.0010020258620689656,**,1.0e-03,Genus
-Ghrelin_pg_ml,Tuzzerella,-0.58,14447.203072955766,1.32e-4,Spearman,38,13,Serum proteins,7.184070796460178e-4,***,7.2e-04,Genus
-Leptin_pg_ml,Tuzzerella,0.68,2936.9793378589934,2.83e-6,Spearman,38,13,Serum proteins,3.314166666666667e-5,****,3.3e-05,Genus
-Weight,Tyzzerella,-0.38,1233685.3478700935,1.95e-7,Spearman,178,"0, 10, 13 (aggregated)",Weight,4.797000000000001e-6,****,4.8e-06,Genus
-AUC,Tyzzerella,-0.28,177776.45782951545,0.00547,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,0.016736567164179105,*,1.7e-02,Genus
-MaxPeak,Tyzzerella,-0.34,185593.38133265814,7.75e-4,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,0.003333041958041958,**,3.3e-03,Genus
-Glucose_min_0,Tyzzerella,-0.29,179013.86229260123,0.00412,Spearman,95,"0, 10, 13 (aggregated)",Glucose tolerance testing,0.013335789473684212,*,1.3e-02,Genus
-Ghrelin_pg_ml,Tyzzerella,0.41,5378.902065216648,0.0103,Spearman,38,13,Serum proteins,0.02827901785714286,*,2.8e-02,Genus
+Health_metric,Taxon,cor,statistic,p,method,n_mouse,n_feces,Week,Metric_Type,p.adj,p.adj.signif,p.adj.print,Taxonomic_Rank
+Weight,Actinobacteriota,-0.36,1210750.1550768286,1.38e-6,Spearman,90,178,"0, 10, 13 (aggregated)",Weight,1.973720930232558e-5,****,2.0e-05,Phylum
+AUC,Actinobacteriota,-0.5,207780.25286058767,2.68e-7,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,5.68344827586207e-6,****,5.7e-06,Phylum
+MaxPeak,Actinobacteriota,-0.51,208925.89639919598,1.58e-7,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,4.224782608695652e-6,****,4.2e-06,Phylum
+Glucose_min_0,Actinobacteriota,-0.37,189808.511594185,2.29e-4,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,0.0011456854838709678,**,1.1e-03,Phylum
+GLP1_pM,Actinobacteriota,0.41,5420,0.0118,Spearman,38,38,13,Serum proteins,0.03196916299559471,*,3.2e-02,Phylum
+Leptin_pg_ml,Actinobacteriota,-0.46,13332,0.00411,Spearman,38,38,13,Serum proteins,0.013335789473684212,*,1.3e-02,Phylum
+Weight,Proteobacteria,-0.4,1246463.1342465137,6.06e-8,Spearman,90,178,"0, 10, 13 (aggregated)",Weight,2.7513157894736843e-6,****,2.8e-06,Phylum
+AUC,Proteobacteria,-0.49,206654.69757087392,4.46e-7,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,8.139705882352942e-6,****,8.1e-06,Phylum
+MaxPeak,Proteobacteria,-0.52,210217.6345599014,8.5e-8,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,2.7513157894736843e-6,****,2.8e-06,Phylum
+Glucose_min_0,Proteobacteria,-0.43,198330.58434695902,1.32e-5,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,1.0681578947368422e-4,***,1.1e-04,Phylum
+Ghrelin_pg_ml,Proteobacteria,0.65,3232.6793124993274,1.17e-5,Spearman,38,38,13,Serum proteins,1.0367142857142858e-4,***,1.0e-04,Phylum
+GLP1_pM,Proteobacteria,0.51,4507.122046087259,0.00117,Spearman,38,38,13,Serum proteins,0.00476523178807947,**,4.8e-03,Phylum
+Leptin_pg_ml,Proteobacteria,-0.6,14648.560213836507,6.19e-5,Spearman,38,38,13,Serum proteins,3.5913679245283016e-4,***,3.6e-04,Phylum
+PYY_pg_ml,Proteobacteria,0.41,5357.752455533921,0.00982,Spearman,38,38,13,Serum proteins,0.027204054054054055,*,2.7e-02,Phylum
+Weight,Verrucomicrobiota,-0.34,1198007.1189526431,3.81e-6,Spearman,90,178,"0, 10, 13 (aggregated)",Weight,4.11078947368421e-5,****,4.1e-05,Phylum
+AUC,Verrucomicrobiota,-0.28,176892.8081142186,0.00667,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,0.01972139423076923,*,2.0e-02,Phylum
+MaxPeak,Verrucomicrobiota,-0.29,178109.93632518768,0.00507,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,0.015668592964824122,*,1.6e-02,Phylum
+Glucose_min_0,Verrucomicrobiota,-0.32,182039.8720517267,0.00197,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,0.00704389534883721,**,7.0e-03,Phylum
+Ghrelin_pg_ml,Verrucomicrobiota,0.39,5589.507594766327,0.016,Spearman,38,38,13,Serum proteins,0.041171548117154816,*,4.1e-02,Phylum
+GLP1_pM,Verrucomicrobiota,0.42,5274.884982694963,0.00818,Spearman,38,38,13,Serum proteins,0.023290277777777778,*,2.3e-02,Phylum
+Weight,Actinobacteria,-0.37,1220350.8456262038,6.2e-7,Spearman,90,178,"0, 10, 13 (aggregated)",Weight,1.0591666666666665e-5,****,1.1e-05,Class
+AUC,Actinobacteria,-0.44,199498.28739687262,8.5e-6,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,8.431451612903226e-5,****,8.4e-05,Class
+MaxPeak,Actinobacteria,-0.48,204278.29911849505,1.25e-6,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,1.830357142857143e-5,****,1.8e-05,Class
+Glucose_min_0,Actinobacteria,-0.33,183903.15693990773,0.00122,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,0.004872077922077922,**,4.9e-03,Class
+Ghrelin_pg_ml,Actinobacteria,0.49,4630.00894381885,0.00165,Spearman,38,38,13,Serum proteins,0.006004437869822485,**,6.0e-03,Class
+GLP1_pM,Actinobacteria,0.53,4267.252401954576,5.69e-4,Spearman,38,38,13,Serum proteins,0.0025730514705882353,**,2.6e-03,Class
+Leptin_pg_ml,Actinobacteria,-0.49,13659.424643460537,0.0016,Spearman,38,38,13,Serum proteins,0.005892215568862275,**,5.9e-03,Class
+Weight,Coriobacteriia,-0.19,1062193.743427194,0.0122,Spearman,90,178,"0, 10, 13 (aggregated)",Weight,0.032621739130434785,*,3.3e-02,Class
+AUC,Coriobacteriia,-0.5,208151.2595616326,2.26e-7,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,5.2275e-6,****,5.2e-06,Class
+MaxPeak,Coriobacteriia,-0.41,195386.38013106107,3.77e-5,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,2.473085106382979e-4,***,2.5e-04,Class
+Glucose_min_0,Coriobacteriia,-0.37,190163.59112818397,2.06e-4,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,0.00107364406779661,**,1.1e-03,Class
+Weight,Gammaproteobacteria,-0.4,1246745.2677282228,5.9e-8,Spearman,90,178,"0, 10, 13 (aggregated)",Weight,2.7513157894736843e-6,****,2.8e-06,Class
+AUC,Gammaproteobacteria,-0.49,206654.69757087392,4.46e-7,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,8.139705882352942e-6,****,8.1e-06,Class
+MaxPeak,Gammaproteobacteria,-0.52,210217.6345599014,8.5e-8,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,2.7513157894736843e-6,****,2.8e-06,Class
+Glucose_min_0,Gammaproteobacteria,-0.43,198330.58434695902,1.32e-5,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,1.0681578947368422e-4,***,1.1e-04,Class
+Ghrelin_pg_ml,Gammaproteobacteria,0.65,3234.6831532754095,1.18e-5,Spearman,38,38,13,Serum proteins,1.0367142857142858e-4,***,1.0e-04,Class
+GLP1_pM,Gammaproteobacteria,0.5,4529.164294624157,0.00124,Spearman,38,38,13,Serum proteins,0.004896496815286624,**,4.9e-03,Class
+Leptin_pg_ml,Gammaproteobacteria,-0.6,14650.564054612587,6.14e-5,Spearman,38,38,13,Serum proteins,3.5913679245283016e-4,***,3.6e-04,Class
+PYY_pg_ml,Gammaproteobacteria,0.42,5333.706366220942,0.00932,Spearman,38,38,13,Serum proteins,0.025935746606334843,*,2.6e-02,Class
+Weight,Verrucomicrobiae,-0.34,1198007.1189526431,3.81e-6,Spearman,90,178,"0, 10, 13 (aggregated)",Weight,4.11078947368421e-5,****,4.1e-05,Class
+AUC,Verrucomicrobiae,-0.28,176892.8081142186,0.00667,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,0.01972139423076923,*,2.0e-02,Class
+MaxPeak,Verrucomicrobiae,-0.29,178109.93632518768,0.00507,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,0.015668592964824122,*,1.6e-02,Class
+Glucose_min_0,Verrucomicrobiae,-0.32,182039.8720517267,0.00197,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,0.00704389534883721,**,7.0e-03,Class
+Ghrelin_pg_ml,Verrucomicrobiae,0.39,5589.507594766327,0.016,Spearman,38,38,13,Serum proteins,0.041171548117154816,*,4.1e-02,Class
+GLP1_pM,Verrucomicrobiae,0.42,5274.884982694963,0.00818,Spearman,38,38,13,Serum proteins,0.023290277777777778,*,2.3e-02,Class
+Weight,Bifidobacteriales,-0.38,1235997.1776551453,1.58e-7,Spearman,90,178,"0, 10, 13 (aggregated)",Weight,4.224782608695652e-6,****,4.2e-06,Order
+AUC,Bifidobacteriales,-0.44,199136.8298410145,9.75e-6,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,9.310153846153848e-5,****,9.3e-05,Order
+MaxPeak,Bifidobacteriales,-0.47,203897.5896864639,1.47e-6,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,2.0546590909090908e-5,****,2.1e-05,Order
+Glucose_min_0,Bifidobacteriales,-0.33,183956.19726732644,0.0012,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,0.004823529411764706,**,4.8e-03,Order
+Ghrelin_pg_ml,Bifidobacteriales,0.43,5165.442467663178,0.00637,Spearman,38,38,13,Serum proteins,0.019017233009708735,*,1.9e-02,Order
+GLP1_pM,Bifidobacteriales,0.52,4388.076274885014,8.23e-4,Spearman,38,38,13,Serum proteins,0.003490655172413793,**,3.5e-03,Order
+Leptin_pg_ml,Bifidobacteriales,-0.53,13952.324548752962,6.81e-4,Spearman,38,38,13,Serum proteins,0.0029915357142857144,**,3.0e-03,Order
+Weight,Burkholderiales,-0.39,1242828.4566049192,8.49e-8,Spearman,90,178,"0, 10, 13 (aggregated)",Weight,2.7513157894736843e-6,****,2.8e-06,Order
+AUC,Burkholderiales,-0.49,206909.09396227347,3.98e-7,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,7.895806451612903e-6,****,7.9e-06,Order
+MaxPeak,Burkholderiales,-0.52,210763.73749903942,6.51e-8,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,2.7513157894736843e-6,****,2.8e-06,Order
+Glucose_min_0,Burkholderiales,-0.44,198847.75974273297,1.09e-5,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,9.85808823529412e-5,****,9.9e-05,Order
+Ghrelin_pg_ml,Burkholderiales,0.63,3360.9251221685536,2.06e-5,Spearman,38,38,13,Serum proteins,1.490470588235294e-4,***,1.5e-04,Order
+GLP1_pM,Burkholderiales,0.5,4561.225747041463,0.00136,Spearman,38,38,13,Serum proteins,0.005131288343558283,**,5.1e-03,Order
+Leptin_pg_ml,Burkholderiales,-0.61,14686.633188582056,5.33e-5,Spearman,38,38,13,Serum proteins,3.245495049504951e-4,***,3.2e-04,Order
+PYY_pg_ml,Burkholderiales,0.4,5520.063558396534,0.0139,Spearman,38,38,13,Serum proteins,0.03637659574468085,*,3.6e-02,Order
+Weight,Clostridia UCG-014,-0.2,1074183.6341085962,0.00716,Spearman,90,178,"0, 10, 13 (aggregated)",Weight,0.020968571428571427,*,2.1e-02,Order
+Leptin_pg_ml,Clostridia UCG-014,-0.42,12985.33567372629,0.00851,Spearman,38,38,13,Serum proteins,0.024007568807339452,*,2.4e-02,Order
+Weight,Oscillospirales,0.35,584933.9956411272,2.91e-6,Spearman,90,178,"0, 10, 13 (aggregated)",Weight,3.314166666666667e-5,****,3.3e-05,Order
+AUC,Oscillospirales,0.41,81056.96401123455,3.29e-5,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,2.2481666666666667e-4,***,2.2e-04,Order
+MaxPeak,Oscillospirales,0.4,82893.78227023866,6.16e-5,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,3.5913679245283016e-4,***,3.6e-04,Order
+Ghrelin_pg_ml,Oscillospirales,-0.49,13620,0.00201,Spearman,38,38,13,Serum proteins,0.007145375722543353,**,7.1e-03,Order
+GLP1_pM,Oscillospirales,-0.4,12785.999999999998,0.0136,Spearman,38,38,13,Serum proteins,0.03620779220779221,*,3.6e-02,Order
+Leptin_pg_ml,Oscillospirales,0.54,4182.000000000001,5.31e-4,Spearman,38,38,13,Serum proteins,0.002450820895522388,**,2.5e-03,Order
+AUC,Peptostreptococcales-Tissierellales,0.26,102767.88735384431,0.0122,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,0.032621739130434785,*,3.3e-02,Order
+MaxPeak,Peptostreptococcales-Tissierellales,0.28,100222.7243399693,0.00711,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,0.02092177033492823,*,2.1e-02,Order
+Weight,Atopobiaceae,-0.32,1176357.1135634568,1.92e-5,Spearman,90,178,"0, 10, 13 (aggregated)",Weight,1.4226506024096384e-4,***,1.4e-04,Family
+AUC,Atopobiaceae,-0.47,203345.60379123667,1.85e-6,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,2.420744680851064e-5,****,2.4e-05,Family
+MaxPeak,Atopobiaceae,-0.37,190291.0578970534,1.98e-4,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,0.0010407692307692307,**,1.0e-03,Family
+Glucose_min_0,Atopobiaceae,-0.38,191649.9523627453,1.3e-4,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,7.138392857142856e-4,***,7.1e-04,Family
+Ghrelin_pg_ml,Atopobiaceae,0.45,5040.443826033959,0.00474,Spearman,38,38,13,Serum proteins,0.01510414507772021,*,1.5e-02,Family
+GLP1_pM,Atopobiaceae,0.51,4516.1258868814175,0.0012,Spearman,38,38,13,Serum proteins,0.004823529411764706,**,4.8e-03,Family
+Leptin_pg_ml,Atopobiaceae,-0.53,14024.033082694854,5.46e-4,Spearman,38,38,13,Serum proteins,0.0024873333333333336,**,2.5e-03,Family
+Weight,Bifidobacteriaceae,-0.38,1234678.3127653613,1.78e-7,Spearman,90,178,"0, 10, 13 (aggregated)",Weight,4.56125e-6,****,4.6e-06,Family
+AUC,Bifidobacteriaceae,-0.43,198516.35736557632,1.23e-5,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,1.050625e-4,***,1.1e-04,Family
+MaxPeak,Bifidobacteriaceae,-0.47,203692.42230363423,1.6e-6,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,2.1866666666666665e-5,****,2.2e-05,Family
+Glucose_min_0,Bifidobacteriaceae,-0.33,183727.8726923837,0.00128,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,0.004950943396226416,**,5.0e-03,Family
+Ghrelin_pg_ml,Bifidobacteriaceae,0.44,5131.597953147667,0.00589,Spearman,38,38,13,Serum proteins,0.01784408866995074,*,1.8e-02,Family
+GLP1_pM,Bifidobacteriaceae,0.52,4385.960992727794,8.17e-4,Spearman,38,38,13,Serum proteins,0.0034892708333333334,**,3.5e-03,Family
+Leptin_pg_ml,Bifidobacteriaceae,-0.53,13967.131523853495,6.51e-4,Spearman,38,38,13,Serum proteins,0.002880323741007194,**,2.9e-03,Family
+Weight,Enterococcaceae,0.35,583662.9742791294,2.63e-6,Spearman,90,178,"0, 10, 13 (aggregated)",Weight,3.2349e-5,****,3.2e-05,Family
+MaxPeak,Enterococcaceae,0.26,102475.54700117801,0.0115,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,0.031433333333333334,*,3.1e-02,Family
+Ghrelin_pg_ml,Enterococcaceae,-0.48,13539.28592078537,0.00221,Spearman,38,38,13,Serum proteins,0.007722443181818182,**,7.7e-03,Family
+GLP1_pM,Enterococcaceae,-0.52,13877.380123118544,8.54e-4,Spearman,38,38,13,Serum proteins,0.003597328767123288,**,3.6e-03,Family
+Leptin_pg_ml,Enterococcaceae,0.59,3746.701150213096,9.67e-5,Spearman,38,38,13,Serum proteins,5.506527777777778e-4,***,5.5e-04,Family
+PYY_pg_ml,Enterococcaceae,-0.43,13035.181391558062,0.00761,Spearman,38,38,13,Serum proteins,0.022076179245283017,*,2.2e-02,Family
+Glucose_min_0,Erysipelatoclostridiaceae,-0.25,173458.5597833611,0.0138,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,0.03637659574468085,*,3.6e-02,Family
+GLP1_pM,Erysipelatoclostridiaceae,0.64,3328.4506757704767,1.79e-5,Spearman,38,38,13,Serum proteins,1.3760625e-4,***,1.4e-04,Family
+Leptin_pg_ml,Erysipelatoclostridiaceae,-0.5,13715.324808564086,0.00136,Spearman,38,38,13,Serum proteins,0.005131288343558283,**,5.1e-03,Family
+Weight,Lactobacillaceae,-0.23,1094854.3865180511,0.00266,Spearman,90,178,"0, 10, 13 (aggregated)",Weight,0.009088333333333334,**,9.1e-03,Family
+AUC,Lactobacillaceae,-0.3,180420.7586991665,0.00295,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,0.009968406593406594,**,1.0e-02,Family
+Ghrelin_pg_ml,Lactobacillaceae,0.41,5418.000000000001,0.0117,Spearman,38,38,13,Serum proteins,0.03183849557522124,*,3.2e-02,Family
+Weight,Peptostreptococcaceae,0.22,696360.2829452518,0.00338,Spearman,90,178,"0, 10, 13 (aggregated)",Weight,0.011236216216216215,*,1.1e-02,Family
+AUC,Peptostreptococcaceae,0.33,93012.17834313744,0.00125,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,0.004896496815286624,**,4.9e-03,Family
+MaxPeak,Peptostreptococcaceae,0.37,87045.40407874259,2.31e-4,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,0.0011456854838709678,**,1.1e-03,Family
+GLP1_pM,Peptostreptococcaceae,-0.45,13220.675103688205,0.00494,Spearman,38,38,13,Serum proteins,0.015421827411167512,*,1.5e-02,Family
+PYY_pg_ml,Peptostreptococcaceae,-0.42,12968.61300478565,0.00883,Spearman,38,38,13,Serum proteins,0.024683863636363636,*,2.5e-02,Family
+Weight,Prevotellaceae,-0.38,1236474.038688447,1.52e-7,Spearman,90,178,"0, 10, 13 (aggregated)",Weight,4.224782608695652e-6,****,4.2e-06,Family
+AUC,Prevotellaceae,-0.37,189721.66285458163,2.35e-4,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,0.0011562,**,1.2e-03,Family
+MaxPeak,Prevotellaceae,-0.43,197683.59356611583,1.67e-5,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,1.3167307692307691e-4,***,1.3e-04,Family
+Glucose_min_0,Prevotellaceae,-0.27,176363.1311006871,0.0075,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,0.021860189573459712,*,2.2e-02,Family
+Ghrelin_pg_ml,Prevotellaceae,0.57,3919.6284428768236,1.81e-4,Spearman,38,38,13,Serum proteins,9.679565217391305e-4,***,9.7e-04,Family
+GLP1_pM,Prevotellaceae,0.64,3254.7811955840502,1.29e-5,Spearman,38,38,13,Serum proteins,1.0681578947368422e-4,***,1.1e-04,Family
+Leptin_pg_ml,Prevotellaceae,-0.64,15027.49434941462,1.27e-5,Spearman,38,38,13,Serum proteins,1.0681578947368422e-4,***,1.1e-04,Family
+Weight,Streptococcaceae,0.46,483023.4771169473,1.64e-10,Spearman,90,178,"0, 10, 13 (aggregated)",Weight,4.141e-8,****,4.1e-08,Family
+AUC,Streptococcaceae,0.36,88131.92836938436,3.2e-4,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,0.001513846153846154,**,1.5e-03,Family
+MaxPeak,Streptococcaceae,0.42,80378.7688379966,2.6e-5,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,1.796629213483146e-4,***,1.8e-04,Family
+Glucose_min_0,Streptococcaceae,0.29,98505.70400602971,0.00483,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,0.015233076923076922,*,1.5e-02,Family
+Per_Eos,Streptococcaceae,-0.58,2806.8643693559716,0.00425,Spearman,43,43,13,% immune cells; HDM,0.013684554973821992,*,1.4e-02,Family
+Ghrelin_pg_ml,Streptococcaceae,-0.62,14761.67862597391,3.95e-5,Spearman,38,38,13,Serum proteins,2.5304687499999996e-4,***,2.5e-04,Family
+GLP1_pM,Streptococcaceae,-0.48,13489.616168489389,0.00252,Spearman,38,38,13,Serum proteins,0.008658100558659218,**,8.7e-03,Family
+Leptin_pg_ml,Streptococcaceae,0.61,3557.9783714357277,4.67e-5,Spearman,38,38,13,Serum proteins,2.9306632653061226e-4,***,2.9e-04,Family
+Weight,Sutterellaceae,-0.39,1243372.0045496293,8.08e-8,Spearman,90,178,"0, 10, 13 (aggregated)",Weight,2.7513157894736843e-6,****,2.8e-06,Family
+AUC,Sutterellaceae,-0.5,207191.1561199767,3.51e-7,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,7.1955e-6,****,7.2e-06,Family
+MaxPeak,Sutterellaceae,-0.52,210669.7079477728,6.82e-8,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,2.7513157894736843e-6,****,2.8e-06,Family
+Glucose_min_0,Sutterellaceae,-0.44,199110.87189550232,9.84e-6,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,9.310153846153848e-5,****,9.3e-05,Family
+Ghrelin_pg_ml,Sutterellaceae,0.63,3360.9251221685536,2.06e-5,Spearman,38,38,13,Serum proteins,1.490470588235294e-4,***,1.5e-04,Family
+GLP1_pM,Sutterellaceae,0.5,4561.225747041463,0.00136,Spearman,38,38,13,Serum proteins,0.005131288343558283,**,5.1e-03,Family
+Leptin_pg_ml,Sutterellaceae,-0.61,14686.633188582056,5.33e-5,Spearman,38,38,13,Serum proteins,3.245495049504951e-4,***,3.2e-04,Family
+PYY_pg_ml,Sutterellaceae,0.4,5520.063558396534,0.0139,Spearman,38,38,13,Serum proteins,0.03637659574468085,*,3.6e-02,Family
+Weight,[Eubacterium] coprostanoligenes group,-0.37,1221379.6758359775,5.68e-7,Spearman,90,178,"0, 10, 13 (aggregated)",Weight,9.98057142857143e-6,****,1.0e-05,Family
+AUC,[Eubacterium] coprostanoligenes group,-0.32,183125.47662191442,0.0015,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,0.005590909090909091,**,5.6e-03,Family
+C_peptide_pg_ml,[Eubacterium] coprostanoligenes group,-0.42,9272.931765954563,0.0142,Spearman,34,34,13,Serum proteins,0.037004237288135594,*,3.7e-02,Family
+Ghrelin_pg_ml,[Eubacterium] coprostanoligenes group,0.63,3374.4050395933155,2.18e-5,Spearman,38,38,13,Serum proteins,1.5410344827586207e-4,***,1.5e-04,Family
+GLP1_pM,[Eubacterium] coprostanoligenes group,0.55,4079.387383089728,3.11e-4,Spearman,38,38,13,Serum proteins,0.0014826744186046512,**,1.5e-03,Family
+Leptin_pg_ml,[Eubacterium] coprostanoligenes group,-0.63,14913.61840604881,2.09e-5,Spearman,38,38,13,Serum proteins,1.494593023255814e-4,***,1.5e-04,Family
+Weight,Acetatifactor,0.28,639632.5383589079,1.41e-4,Spearman,90,178,"0, 10, 13 (aggregated)",Weight,7.606578947368421e-4,***,7.6e-04,Genus
+MaxPeak,Acetatifactor,0.28,99705.67658431725,0.00634,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,0.019017233009708735,*,1.9e-02,Genus
+Ghrelin_pg_ml,Acetatifactor,-0.65,15073.99353632288,1.03e-5,Spearman,38,38,13,Serum proteins,9.597727272727272e-5,****,9.6e-05,Genus
+GLP1_pM,Acetatifactor,-0.49,13660.687700782677,0.00159,Spearman,38,38,13,Serum proteins,0.005890662650602409,**,5.9e-03,Genus
+Leptin_pg_ml,Acetatifactor,0.56,3982.494075215813,2.25e-4,Spearman,38,38,13,Serum proteins,0.0011435950413223141,**,1.1e-03,Genus
+Weight,Bifidobacterium,-0.39,1240662.2028457911,1.04e-7,Spearman,90,178,"0, 10, 13 (aggregated)",Weight,3.198e-6,****,3.2e-06,Genus
+AUC,Bifidobacterium,-0.44,199763.3360844472,7.69e-6,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,7.753032786885245e-5,****,7.8e-05,Genus
+MaxPeak,Bifidobacterium,-0.48,205329.73847641205,7.99e-7,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,1.2599615384615386e-5,****,1.3e-05,Genus
+Glucose_min_0,Bifidobacterium,-0.34,184839.3205131403,9.51e-4,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,0.0039786734693877555,**,4.0e-03,Genus
+Ghrelin_pg_ml,Bifidobacterium,0.44,5101.984002946593,0.0055,Spearman,38,38,13,Serum proteins,0.016745049504950493,*,1.7e-02,Genus
+GLP1_pM,Bifidobacterium,0.52,4362.69288899838,7.62e-4,Spearman,38,38,13,Serum proteins,0.0033002112676056338,**,3.3e-03,Genus
+Leptin_pg_ml,Bifidobacterium,-0.53,14003.091320526228,5.83e-4,Spearman,38,38,13,Serum proteins,0.002617116788321168,**,2.6e-03,Genus
+Weight,Butyricicoccus,-0.21,1077603.4084397044,0.00612,Spearman,90,178,"0, 10, 13 (aggregated)",Weight,0.018449999999999998,*,1.8e-02,Genus
+MaxPeak,Butyricicoccus,-0.3,179520.82646776896,0.00365,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,0.012004010695187165,*,1.2e-02,Genus
+Weight,Candidatus Arthromitus,-0.3,1160194.0929044785,5.86e-5,Spearman,90,178,"0, 10, 13 (aggregated)",Weight,3.4989320388349515e-4,***,3.5e-04,Genus
+AUC,Candidatus Arthromitus,-0.3,180206.4272104629,0.0031,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,0.01036141304347826,*,1.0e-02,Genus
+MaxPeak,Candidatus Arthromitus,-0.33,183685.1226295367,0.00129,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,0.004958437499999999,**,5.0e-03,Genus
+Ghrelin_pg_ml,Candidatus Arthromitus,0.44,5091.059693545553,0.00535,Spearman,38,38,13,Serum proteins,0.01645125,*,1.6e-02,Genus
+GLP1_pM,Candidatus Arthromitus,0.49,4629.994786778803,0.00165,Spearman,38,38,13,Serum proteins,0.006004437869822485,**,6.0e-03,Genus
+Leptin_pg_ml,Candidatus Arthromitus,-0.41,12914.492861546822,0.00994,Spearman,38,38,13,Serum proteins,0.02741300448430493,*,2.7e-02,Genus
+GLP1_pM,Candidatus Stoquefichus,0.57,3975.2004979791163,2.19e-4,Spearman,38,38,13,Serum proteins,0.0011223750000000001,**,1.1e-03,Genus
+Leptin_pg_ml,Candidatus Stoquefichus,-0.53,13947.4699449302,6.92e-4,Spearman,38,38,13,Serum proteins,0.0030182978723404257,**,3.0e-03,Genus
+Weight,Coriobacteriaceae UCG-002,-0.32,1180252.2890336055,1.45e-5,Spearman,90,178,"0, 10, 13 (aggregated)",Weight,1.158116883116883e-4,***,1.2e-04,Genus
+AUC,Coriobacteriaceae UCG-002,-0.48,204315.89795991394,1.23e-6,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,1.830357142857143e-5,****,1.8e-05,Genus
+MaxPeak,Coriobacteriaceae UCG-002,-0.38,191640.9850435965,1.3e-4,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,7.138392857142856e-4,***,7.1e-04,Genus
+Glucose_min_0,Coriobacteriaceae UCG-002,-0.39,192325.9930912997,1.04e-4,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,5.867889908256881e-4,***,5.9e-04,Genus
+Ghrelin_pg_ml,Coriobacteriaceae UCG-002,0.47,4858.790366800009,0.00302,Spearman,38,38,13,Serum proteins,0.010149180327868853,*,1.0e-02,Genus
+GLP1_pM,Coriobacteriaceae UCG-002,0.5,4540.896813140593,0.00128,Spearman,38,38,13,Serum proteins,0.004950943396226416,**,5.0e-03,Genus
+Leptin_pg_ml,Coriobacteriaceae UCG-002,-0.55,14209.815029638668,3e-4,Spearman,38,38,13,Serum proteins,0.00144140625,**,1.4e-03,Genus
+Weight,Lachnospiraceae UCG-001,-0.36,1215586.9934279101,9.25e-7,Spearman,90,178,"0, 10, 13 (aggregated)",Weight,1.4221875e-5,****,1.4e-05,Genus
+AUC,Lachnospiraceae UCG-001,-0.4,193592.13128219228,6.91e-5,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,3.9716355140186917e-4,***,4.0e-04,Genus
+MaxPeak,Lachnospiraceae UCG-001,-0.44,199146.74691194063,9.71e-6,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,9.310153846153848e-5,****,9.3e-05,Genus
+Glucose_min_0,Lachnospiraceae UCG-001,-0.41,195658.4394339332,3.43e-5,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,2.2928804347826089e-4,***,2.3e-04,Genus
+Ghrelin_pg_ml,Lachnospiraceae UCG-001,0.62,3505.8742247699324,3.78e-5,Spearman,38,38,13,Serum proteins,2.473085106382979e-4,***,2.5e-04,Genus
+GLP1_pM,Lachnospiraceae UCG-001,0.42,5271.066726057911,0.00811,Spearman,38,38,13,Serum proteins,0.023290277777777778,*,2.3e-02,Genus
+Leptin_pg_ml,Lachnospiraceae UCG-001,-0.65,15069.214493521495,1.05e-5,Spearman,38,38,13,Serum proteins,9.638059701492537e-5,****,9.6e-05,Genus
+Weight,Lactococcus,0.47,475228.2399665136,6.59e-11,Spearman,90,178,"0, 10, 13 (aggregated)",Weight,4.05285e-8,****,4.1e-08,Genus
+AUC,Lactococcus,0.46,75149.20897388995,3.64e-6,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,4.0701818181818177e-5,****,4.1e-05,Genus
+MaxPeak,Lactococcus,0.52,65935.44987188136,6.11e-8,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,2.7513157894736843e-6,****,2.8e-06,Genus
+Glucose_min_0,Lactococcus,0.31,95703.0165322334,0.00248,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,0.008616949152542373,**,8.6e-03,Genus
+C_peptide_pg_ml,Lactococcus,0.41,3882.502909545898,0.017,Spearman,34,34,13,Serum proteins,0.043562500000000004,*,4.4e-02,Genus
+Ghrelin_pg_ml,Lactococcus,-0.68,15341.746906816668,2.82e-6,Spearman,38,38,13,Serum proteins,3.314166666666667e-5,****,3.3e-05,Genus
+GLP1_pM,Lactococcus,-0.54,14063.358952215129,4.83e-4,Spearman,38,38,13,Serum proteins,0.002250340909090909,**,2.3e-03,Genus
+Leptin_pg_ml,Lactococcus,0.68,2897.7731881953255,2.31e-6,Spearman,38,38,13,Serum proteins,2.9494897959183673e-5,****,2.9e-05,Genus
+Weight,Marvinbryantia,-0.28,1140453.4714336484,2.09e-4,Spearman,90,178,"0, 10, 13 (aggregated)",Weight,0.001080126050420168,**,1.1e-03,Genus
+AUC,Marvinbryantia,-0.35,186327.3731350073,6.32e-4,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,0.0028165217391304346,**,2.8e-03,Genus
+MaxPeak,Marvinbryantia,-0.33,184663.55943722939,9.97e-4,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,0.0040999999999999995,**,4.1e-03,Genus
+Ghrelin_pg_ml,Marvinbryantia,0.48,4710.044054774578,0.00205,Spearman,38,38,13,Serum proteins,0.007245689655172414,**,7.2e-03,Genus
+GLP1_pM,Marvinbryantia,0.45,5042.657502902281,0.00477,Spearman,38,38,13,Serum proteins,0.015121391752577318,*,1.5e-02,Genus
+Leptin_pg_ml,Marvinbryantia,-0.48,13562.758860098425,0.00208,Spearman,38,38,13,Serum proteins,0.007309714285714285,**,7.3e-03,Genus
+Weight,Muribaculum,-0.44,1288421.485527497,8.74e-10,Spearman,90,178,"0, 10, 13 (aggregated)",Weight,1.343775e-7,****,1.3e-07,Genus
+AUC,Muribaculum,-0.5,208106.37792214422,2.31e-7,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,5.2275e-6,****,5.2e-06,Genus
+MaxPeak,Muribaculum,-0.52,210782.62892156615,6.45e-8,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,2.7513157894736843e-6,****,2.8e-06,Genus
+Glucose_min_0,Muribaculum,-0.39,192202.94154335858,1.09e-4,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,6.094090909090909e-4,***,6.1e-04,Genus
+C_peptide_pg_ml,Muribaculum,-0.54,10079.918208265988,9.77e-4,Spearman,34,34,13,Serum proteins,0.004059831081081081,**,4.1e-03,Genus
+Ghrelin_pg_ml,Muribaculum,0.49,4662.396814954636,0.0018,Spearman,38,38,13,Serum proteins,0.006511764705882353,**,6.5e-03,Genus
+GLP1_pM,Muribaculum,0.45,5032.229670006045,0.00465,Spearman,38,38,13,Serum proteins,0.014894531249999999,*,1.5e-02,Genus
+Leptin_pg_ml,Muribaculum,-0.69,15442.414925107,1.67e-6,Spearman,38,38,13,Serum proteins,2.232717391304348e-5,****,2.2e-05,Genus
+Weight,Parasutterella,-0.4,1246764.1222194275,5.89e-8,Spearman,90,178,"0, 10, 13 (aggregated)",Weight,2.7513157894736843e-6,****,2.8e-06,Genus
+AUC,Parasutterella,-0.49,206636.28032597006,4.5e-7,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,8.139705882352942e-6,****,8.1e-06,Genus
+MaxPeak,Parasutterella,-0.52,210582.9413971953,7.12e-8,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,2.7513157894736843e-6,****,2.8e-06,Genus
+Glucose_min_0,Parasutterella,-0.43,198532.34245373588,1.22e-5,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,1.050625e-4,***,1.1e-04,Genus
+Ghrelin_pg_ml,Parasutterella,0.63,3340.8867144077362,1.89e-5,Spearman,38,38,13,Serum proteins,1.4226506024096384e-4,***,1.4e-04,Genus
+GLP1_pM,Parasutterella,0.5,4593.28719945877,0.00149,Spearman,38,38,13,Serum proteins,0.0055875000000000005,**,5.6e-03,Genus
+Leptin_pg_ml,Parasutterella,-0.61,14676.613984701647,5.54e-5,Spearman,38,38,13,Serum proteins,3.3402941176470584e-4,***,3.3e-04,Genus
+PYY_pg_ml,Parasutterella,0.38,5636.28632340927,0.0175,Spearman,38,38,13,Serum proteins,0.04465767634854772,*,4.5e-02,Genus
+Weight,Prevotellaceae NK3B31 group,-0.42,1270331.8201431662,5.89e-9,Spearman,90,178,"0, 10, 13 (aggregated)",Weight,7.2447e-7,****,7.2e-07,Genus
+AUC,Prevotellaceae NK3B31 group,-0.37,189277.41806300197,2.69e-4,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,0.0013026377952755905,**,1.3e-03,Genus
+MaxPeak,Prevotellaceae NK3B31 group,-0.33,184651.50453961352,0.001,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,0.0040999999999999995,**,4.1e-03,Genus
+Glucose_min_0,Prevotellaceae NK3B31 group,-0.31,181088.87667608724,0.0025,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,0.008637640449438202,**,8.6e-03,Genus
+C_peptide_pg_ml,Prevotellaceae NK3B31 group,-0.41,9256.664037929366,0.0148,Spearman,34,34,13,Serum proteins,0.03840506329113924,*,3.8e-02,Genus
+Ghrelin_pg_ml,Prevotellaceae NK3B31 group,0.64,3328.5899862418896,1.79e-5,Spearman,38,38,13,Serum proteins,1.3760625e-4,***,1.4e-04,Genus
+GLP1_pM,Prevotellaceae NK3B31 group,0.62,3514.661578564807,3.92e-5,Spearman,38,38,13,Serum proteins,2.5304687499999996e-4,***,2.5e-04,Genus
+Leptin_pg_ml,Prevotellaceae NK3B31 group,-0.66,15197.144866327579,5.77e-6,Spearman,38,38,13,Serum proteins,6.0144915254237287e-5,****,6.0e-05,Genus
+Weight,Prevotellaceae UCG-001,-0.36,1218753.6456870025,7.1e-7,Spearman,90,178,"0, 10, 13 (aggregated)",Weight,1.149078947368421e-5,****,1.1e-05,Genus
+AUC,Prevotellaceae UCG-001,-0.36,188289.60859941563,3.61e-4,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,0.0016947709923664123,**,1.7e-03,Genus
+MaxPeak,Prevotellaceae UCG-001,-0.46,202249.77222545198,2.9e-6,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,3.314166666666667e-5,****,3.3e-05,Genus
+Glucose_min_0,Prevotellaceae UCG-001,-0.26,174082.32023996545,0.0122,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,0.032621739130434785,*,3.3e-02,Genus
+Ghrelin_pg_ml,Prevotellaceae UCG-001,0.54,4246.707635274876,5.34e-4,Spearman,38,38,13,Serum proteins,0.002450820895522388,**,2.5e-03,Genus
+GLP1_pM,Prevotellaceae UCG-001,0.62,3477.109535514752,3.36e-5,Spearman,38,38,13,Serum proteins,2.2707692307692305e-4,***,2.3e-04,Genus
+Leptin_pg_ml,Prevotellaceae UCG-001,-0.63,14935.57013194327,1.9e-5,Spearman,38,38,13,Serum proteins,1.4226506024096384e-4,***,1.4e-04,Genus
+PYY_pg_ml,Prevotellaceae UCG-001,0.38,5670.4641198311065,0.0188,Spearman,38,38,13,Serum proteins,0.047776859504132234,*,4.8e-02,Genus
+Weight,Rikenella,0.34,589649.072185199,4.2e-6,Spearman,90,178,"0, 10, 13 (aggregated)",Weight,4.453448275862069e-5,****,4.5e-05,Genus
+AUC,Rikenella,0.41,81644.97463175852,4.04e-5,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,2.561443298969072e-4,***,2.6e-04,Genus
+MaxPeak,Rikenella,0.42,80207.48143583104,2.44e-5,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,1.7052272727272728e-4,***,1.7e-04,Genus
+Glucose_min_0,Rikenella,0.3,97295.7897388785,0.00364,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,0.012004010695187165,*,1.2e-02,Genus
+Ghrelin_pg_ml,Rikenella,-0.57,14340,2.48e-4,Spearman,38,38,13,Serum proteins,0.0012104761904761906,**,1.2e-03,Genus
+Leptin_pg_ml,Rikenella,0.73,2442.0000000000005,7.05e-7,Spearman,38,38,13,Serum proteins,1.149078947368421e-5,****,1.1e-05,Genus
+Weight,Rikenellaceae RC9 gut group,0.41,525901.0713066086,1.58e-8,Spearman,90,178,"0, 10, 13 (aggregated)",Weight,1.6195e-6,****,1.6e-06,Genus
+AUC,Rikenellaceae RC9 gut group,0.41,82330.75365580879,5.1e-5,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,3.168181818181818e-4,***,3.2e-04,Genus
+MaxPeak,Rikenellaceae RC9 gut group,0.46,74064.61458879225,2.35e-6,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,2.9494897959183673e-5,****,2.9e-05,Genus
+Glucose_min_0,Rikenellaceae RC9 gut group,0.3,96240.66144329477,0.00283,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,0.00961574585635359,**,9.6e-03,Genus
+Per_Eos,Rikenellaceae RC9 gut group,-0.52,2685.032805760088,0.0139,Spearman,43,43,13,% immune cells; HDM,0.03637659574468085,*,3.6e-02,Genus
+Ghrelin_pg_ml,Rikenellaceae RC9 gut group,-0.43,13027.913493654296,0.00773,Spearman,38,38,13,Serum proteins,0.022319014084507042,*,2.2e-02,Genus
+GLP1_pM,Rikenellaceae RC9 gut group,-0.42,12998.779292849342,0.00826,Spearman,38,38,13,Serum proteins,0.023409677419354836,*,2.3e-02,Genus
+Leptin_pg_ml,Rikenellaceae RC9 gut group,0.66,3130.322240881857,7.3e-6,Spearman,38,38,13,Serum proteins,7.4825e-5,****,7.5e-05,Genus
+Weight,Romboutsia,0.22,698501.9242063285,0.00376,Spearman,90,178,"0, 10, 13 (aggregated)",Weight,0.0123,*,1.2e-02,Genus
+AUC,Romboutsia,0.33,93028.25495373663,0.00125,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,0.004896496815286624,**,4.9e-03,Genus
+MaxPeak,Romboutsia,0.37,87037.98340760918,2.3e-4,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,0.0011456854838709678,**,1.1e-03,Genus
+GLP1_pM,Romboutsia,-0.45,13220.675103688205,0.00494,Spearman,38,38,13,Serum proteins,0.015421827411167512,*,1.5e-02,Genus
+PYY_pg_ml,Romboutsia,-0.42,12968.61300478565,0.00883,Spearman,38,38,13,Serum proteins,0.024683863636363636,*,2.5e-02,Genus
+Weight,Tuzzerella,0.46,484866.18272077845,2.02e-10,Spearman,90,178,"0, 10, 13 (aggregated)",Weight,4.141e-8,****,4.1e-08,Genus
+AUC,Tuzzerella,0.5,68785.84138655008,2.38e-7,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,5.2275e-6,****,5.2e-06,Genus
+MaxPeak,Tuzzerella,0.52,65812.58389486778,5.75e-8,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,2.7513157894736843e-6,****,2.8e-06,Genus
+Glucose_min_0,Tuzzerella,0.38,86381.92705004358,1.89e-4,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,0.0010020258620689656,**,1.0e-03,Genus
+Ghrelin_pg_ml,Tuzzerella,-0.58,14447.203072955766,1.32e-4,Spearman,38,38,13,Serum proteins,7.184070796460178e-4,***,7.2e-04,Genus
+Leptin_pg_ml,Tuzzerella,0.68,2936.9793378589934,2.83e-6,Spearman,38,38,13,Serum proteins,3.314166666666667e-5,****,3.3e-05,Genus
+Weight,Tyzzerella,-0.38,1233685.3478700935,1.95e-7,Spearman,90,178,"0, 10, 13 (aggregated)",Weight,4.797000000000001e-6,****,4.8e-06,Genus
+AUC,Tyzzerella,-0.28,177776.45782951545,0.00547,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,0.016736567164179105,*,1.7e-02,Genus
+MaxPeak,Tyzzerella,-0.34,185593.38133265814,7.75e-4,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,0.003333041958041958,**,3.3e-03,Genus
+Glucose_min_0,Tyzzerella,-0.29,179013.86229260123,0.00412,Spearman,58,95,"0, 10, 12 (aggregated)",Glucose tolerance testing,0.013335789473684212,*,1.3e-02,Genus
+Ghrelin_pg_ml,Tyzzerella,0.41,5378.902065216648,0.0103,Spearman,38,38,13,Serum proteins,0.02827901785714286,*,2.8e-02,Genus

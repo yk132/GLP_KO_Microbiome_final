@@ -57,6 +57,7 @@ library(readr)
 library(tibble)
 library(stringr)
 library(ggtext)
+library(doBy)
 ```
 
 
@@ -730,6 +731,19 @@ for (i in 1:length(LT.Q1.deseq.intersect.intra$row)) {
 
 Very spurious. This is not doing interpretation on; it's unlikely that these spurious differences have biological meaning. 
 
+```{r}
+lt.graph.hfd %>%
+  filter(OTU %in% LT.Q1.deseq.intersect.surgery$row) %>% 
+  summary_by(Abundance ~ OTU + Surgery, FUN = median)
+```
+
+```{r}
+lt.graph.hfd %>%
+  filter(OTU %in% LT.Q1.deseq.intersect.intra$row) %>% 
+  summary_by(Abundance ~ OTU + Intranasal_Treatment, FUN = median)
+```
+
+
 # Lung Tissue Question 2: Intranasal_Treatment * Diet, No surgery group
 
 ## Make TSE objects
@@ -1091,6 +1105,18 @@ lt.graph.none %>%
 
 
 Very spurious. This is not worth doing interpretation on; it's unlikely that these spurious differences have biological meaning. 
+
+```{r}
+lt.graph.none %>%
+  filter(OTU %in% ancom.intersect.nosurgery$taxon) %>% 
+  summary_by(Abundance ~ OTU + Intranasal_Treatment, FUN = median)
+```
+
+```{r}
+lt.graph.none %>%
+  filter(OTU == "Pirellula") %>% 
+  summary_by(Abundance ~ OTU + Diet, FUN = median)
+```
 
 # Reproducibility
 ```{r}
