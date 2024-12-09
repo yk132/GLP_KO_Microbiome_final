@@ -1073,14 +1073,14 @@ lt.graph.none %>%
   ggplot(aes(x = Diet, y = Abundance, color = Diet)) + 
   geom_boxplot(width = 0.2) + geom_jitter(height = 0, width = 0.3) +  
   labs(y="*Pirellula* Relative Abundance",
-       x="Intranasal Treatment") + 
+       x="Diet") + 
   theme_bw(base_size = 14) + theme(axis.title.y = element_markdown(), title = element_markdown())
 ```
 
 ```{r}
 lt.graph.none %>% 
   filter(OTU == "Pseudarcicella") %>%  
-  ggplot(aes(x = Diet, y = Abundance, color = Diet)) + 
+  ggplot(aes(x = Intranasal_Treatment, y = Abundance, color = Intranasal_Treatment)) + 
   geom_boxplot(width = 0.2) + geom_jitter(height = 0, width = 0.3) +  
   labs(y="*Pseudarcicella* Relative Abundance",
        x="Intranasal Treatment") + 
@@ -1088,7 +1088,7 @@ lt.graph.none %>%
 
 lt.graph.none %>% 
   filter(OTU == "Pirellulaceae") %>%  
-  ggplot(aes(x = Diet, y = Abundance, color = Diet)) + 
+  ggplot(aes(x = Intranasal_Treatment, y = Abundance, color = Intranasal_Treatment)) + 
   geom_boxplot(width = 0.2) + geom_jitter(height = 0, width = 0.3) +  
   labs(y="Pirellulaceae Relative Abundance",
        x="Intranasal Treatment") + 
@@ -1096,7 +1096,7 @@ lt.graph.none %>%
 
 lt.graph.none %>% 
   filter(OTU == "Pirellulales") %>%  
-  ggplot(aes(x = Diet, y = Abundance, color = Diet)) + 
+  ggplot(aes(x = Intranasal_Treatment, y = Abundance, color = Intranasal_Treatment)) + 
   geom_boxplot(width = 0.2) + geom_jitter(height = 0, width = 0.3) +  
   labs(y="Pirellulales Relative Abundance",
        x="Intranasal Treatment") + 
