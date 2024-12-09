@@ -925,7 +925,7 @@ plot_grid(fecal.hfd.res.graph, fecal.hfd.res.graph.order,
 ```
 
 ```{r}
-ragg::agg_jpeg(file.path(fig.dir, "fecal_surgery_lacto_summary.jpeg"), width = 7, height = 5, units = "in", res = 600)
+ragg::agg_jpeg(file.path(fig.dir, "fecal_surgery_lacto_summary.jpeg"), width = 10, height = 5, units = "in", res = 600)
 fecal.hfd.summary
 dev.off()
 ```
