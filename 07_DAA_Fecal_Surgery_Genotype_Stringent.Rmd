@@ -1318,6 +1318,11 @@ ancom.intersect.nosurgery
 ```
 
 ```{r}
+ancom.intersect.nosurgery %>% arrange(Tax_rank, taxon)
+```
+
+
+```{r}
 fecal.Q2.deseq %>% filter(row %in% tab.fecal.Q2$taxon) %>%
   dplyr::select(row, Comparison, Compare_taxon, Test)  %>%
   group_by(row) %>%
