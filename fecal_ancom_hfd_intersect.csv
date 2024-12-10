@@ -1,3 +1,3 @@
 taxon,W,detected_0.9,detected_0.8,detected_0.7,detected_0.6,Tax_rank,Test
-Lactobacillaceae,27,FALSE,TRUE,TRUE,TRUE,Family,"ANCOM II, fecal microbiome: all HFD, wk 10 & 13. Structural zeroes from Surgery, adjust with Week + Genotype"
-Lactobacillales,21,TRUE,TRUE,TRUE,TRUE,Order,"ANCOM II, fecal microbiome: all HFD, wk 10 & 13. Structural zeroes from Surgery, adjust with Week + Genotype"
+Lactobacillaceae,21,FALSE,TRUE,TRUE,TRUE,Family,"ANCOM II, fecal microbiome: all HFD, wk 10 & 13. Structural zeroes from Surgery, adjust with Week + Genotype"
+Lactobacillales,15,TRUE,TRUE,TRUE,TRUE,Order,"ANCOM II, fecal microbiome: all HFD, wk 10 & 13. Structural zeroes from Surgery, adjust with Week + Genotype"

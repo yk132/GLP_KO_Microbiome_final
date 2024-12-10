@@ -363,6 +363,10 @@ f.nosurgery.intersect %>% filter(row %in% f.hfd.intersect$row)
 micro.corr.res %>% filter(Taxon %in% f.hfd.intersect$row)
 ```
 
+```{r}
+nrow(micro.corr.res)
+```
+
 
 ```{r}
 micro.corr.res %>% datatable()
@@ -393,9 +397,6 @@ f.ra %>% filter(OTU %in% f.intersect$row) %>%
          Label = as.character(Label)) -> f.ra.graph
 ```
 
-```{r}
-f.ra.graph
-```
 
 ```{r}
 Weight.corr.df %>% dplyr::select(Label, Weight) %>% 
@@ -498,7 +499,7 @@ fig.para.rel
 ```{r}
 micro.corr.res %>% 
   filter(Taxon == "Lachnospiraceae UCG-001" | Taxon == "Bifidobacterium" | Taxon == "Parasutterella") %>%
-  arrange(cor)
+  arrange(Taxon)
 ```
 
 ```{r}

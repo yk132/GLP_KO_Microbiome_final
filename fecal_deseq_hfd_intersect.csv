@@ -1,4 +1,5 @@
 row,baseMean,log2FoldChange,lfcSE,stat,pvalue,padj,Comparison,Compare_taxon,Test
-Lactobacillaceae,3521.5151883869767,1.2399238116808857,0.44463492162657886,2.7886334414421468,0.005293093665439357,0.042344749323514855,"Surgery VSG, wk 13",Family,"DESeq2, Fecal microbiome: all HFD, wk 10 + 13, Surgery * Week + Genotype"
-Lactobacillaceae,3521.5151883869767,2.833235778279456,0.6574473027054496,4.309449238928289,1.636616168780586e-5,5.237171740097875e-4,Week: week 13 over week 10,Family,"DESeq2, Fecal microbiome: all HFD, wk 10 + 13, Surgery * Week + Genotype"
-Lactobacillales,3969.378948456525,2.0751096371557782,0.492956117490273,4.209522031536051,2.559114885473444e-5,3.070937862568133e-4,Week: week 13 over week 10,Order,"DESeq2, Fecal microbiome: all HFD, wk 10 + 13, Surgery * Week + Genotype"
+Lactobacillaceae,3521.5151883869767,1.2399235249573306,0.44417630645437983,2.7915120796401145,0.005246239936499717,0.03278899960312323,"Surgery VSG, wk 13",Family,"DESeq2, Fecal microbiome: all HFD, wk 10 + 13, Surgery * Week + Genotype"
+Lactobacillaceae,3521.5151883869767,2.1997647329582803,0.769654368866932,2.8581202445413583,0.0042615886772089445,0.045213084209636205,Surgery: Sham over None,Family,"DESeq2, Fecal microbiome: all HFD, wk 10 + 13, Surgery * Week + Genotype"
+Lactobacillaceae,3521.5151883869767,2.8332362073558435,0.656769319521938,4.313898538101863,1.604005830738461e-5,4.010014576846152e-4,Week: week 13 over week 10,Family,"DESeq2, Fecal microbiome: all HFD, wk 10 + 13, Surgery * Week + Genotype"
+Lactobacillales,3969.378948456525,2.075110067825663,0.4901312468405468,4.23378448365026,2.297911713311413e-5,1.953224956314701e-4,Week: week 13 over week 10,Order,"DESeq2, Fecal microbiome: all HFD, wk 10 + 13, Surgery * Week + Genotype"
