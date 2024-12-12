@@ -1,0 +1,1130 @@
+---
+title: '05: Diversity metrics, microbiome'
+author: "Eva Kim"
+output: 
+  html_document:
+    df_print: paged
+    toc: true
+    toc_float: true
+    toc_collapsed: true
+    toc_depth: 3
+    number_sections: true
+    theme: lumen
+date: "`r format(Sys.time(), '%m/%d/%Y')`"
+---
+
+Descriptive microbiome stats and cleaner code for dissertation / publication. 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options(getClass.msg=FALSE) # Suppress messages about class phyloseq being found in two packages
+```
+
+# Load libraries and directories
+
+```{r, results = 'hide', warning=FALSE, message=FALSE}
+library(magrittr)
+library(phyloseq)
+library(fs)
+library(tidyverse)
+library(vegan)
+library(rstatix)
+library(ggpubr)
+library(microViz)
+library(pals)
+library(RColorBrewer)
+library(colorBlindness)
+library(microbiome)
+library(ggrepel)
+library(DT)
+library(plotly)
+library(ape)
+library(picante)
+library(phytools)
+library(DESeq2)
+library(parallel)
+library(doBy)
+library(ragg)
+library(cowplot)
+library(ggtext)
+```
+
+
+```{r, warning=FALSE, message=FALSE}
+rm(list=ls()) # clear environment 
+
+git.dir = file.path("/hpc/group/dmc/Eva/GLP_KO_Microbiome_final") # CHANGE ME 
+ps.rds <- file.path(git.dir, "ps.GLP1.rds")
+ps <- read_rds(ps.rds)
+ps
+
+fig.dir = file.path(git.dir, "figures")
+
+map.file = file.path(git.dir, "Metadata_GLP1.csv")
+meta.df = read_csv(map.file, show_col_types = FALSE)
+```
+
+Note that this phyloseq object is **already filtered** such that only samples with reads > 1000 are available. See here: 
+
+```{r, warning=FALSE, message=FALSE}
+sample_sums(ps) %>% as.data.frame() %>% 
+  dplyr::rename(Reads = ".") %>% 
+  arrange(Reads) 
+```
+
+The names are hard to interpret because they are the SRA accession numbers. Let's change the names in the phyloseq object. 
+
+```{r}
+phyloseq::sample_names(ps) <- phyloseq::sample_data(ps)$Label
+```
+
+## Change metadata to make variables factors
+
+```{r}
+meta.df$Genotype <- factor(meta.df$Genotype, levels = c("WT", "KO"))
+meta.df$Sex <- factor(meta.df$Sex, levels = c("Female", "Male"))
+meta.df$Diet <- factor(meta.df$Diet, levels = c("Normal_Chow", "High_Fat_Diet"))
+meta.df$Intranasal_Treatment <- factor(meta.df$Intranasal_Treatment, levels = c("PBS", "HDM"))
+meta.df$Surgery <- factor(meta.df$Surgery, levels = c("None", "Sham", "VSG"))
+meta.df$Group <- factor(meta.df$Group, levels = c("NA", "Control", "1", "2"))
+```
+
+
+```{r, warning=FALSE, message=FALSE}
+meta.df %>% dplyr::filter(Label %in% rownames(phyloseq::sample_data(ps))) %>%
+  mutate(Label_graph = Label) %>% 
+  column_to_rownames("Label") -> meta.ps
+
+ps
+sample_data(ps) <- meta.ps
+ps
+```
+
+`Genotype`, `Sex`, `Diet`, `Intranasal_Treatment`, and `Surgery` are appropriately factors now. 
+
+## Subset phyloseq objects
+
+```{r, message=FALSE}
+# Only include samples 
+subset_samples(ps, Type == "True Sample") -> ps_sam
+
+# remove samples with potential labeling issues 
+ps_sam %>% subset_samples(row.names(ps_sam@sam_data) != "294" & row.names(ps_sam@sam_data) != "30") -> ps_sam
+
+# Subset by sample type
+ps_sam %>% subset_samples(Sample_type == "Lung Tissue") -> ps.LT.asv
+ps_sam %>% subset_samples(Sample_type == "Fecal") -> ps.F.asv
+
+ps_sam
+ps.LT.asv
+ps.F.asv
+
+# Relative abundance
+ps_sam.ts <- transform_sample_counts(ps_sam, function(x) x/sum(x))
+ps.LT.asv.ts <- transform_sample_counts(ps.LT.asv, function(x) x/sum(x))
+ps.F.asv.ts <- transform_sample_counts(ps.F.asv, function(x) x/sum(x))
+```
+
+## Clean-up Metadata
+
+Let's subset the metadata to those that are in the `ps_sam` object. 
+
+```{r}
+meta.df %>%  
+  filter(meta.df$Label %in% rownames(ps_sam@sam_data)) -> meta.sam
+
+meta.sam %>% filter(is.na(Genotype) == TRUE & is.na(Intranasal_Treatment) == TRUE & is.na(Surgery) == TRUE)
+```
+
+# Rarefaction curves
+
+```{r}
+rarecurve(as.data.frame(otu_table(ps_sam)), step = 100, cex = 0.5, tidy = TRUE) -> rare_ps #put in ggplot2 friendly dataframe
+
+meta.sam %>% dplyr::select(Label, Sample_type, Mouse, Week, DNA_ng_ul_raw) %>%
+  dplyr::rename(Site = Label) %>% 
+  right_join(rare_ps, by = "Site") -> rare_ps
+
+ggplot(data=rare_ps, aes(x=Sample, y=Species, group=Site)) + 
+  geom_line() + theme_bw() + labs(x = "Number of Reads", y= "Species Richness") + 
+  facet_wrap(~Sample_type, scales = "free")  -> p
+p
+ggplotly(p, tooltip = "Site")
+```
+
+# Relative abundance plots
+
+```{r, message=FALSE}
+ps_sam %>% tax_glom("Phylum") %>% 
+  transform_sample_counts(function(x) x/sum(x)) -> ps.phylum.ts
+
+taxa_names(ps.phylum.ts) <- tax_table(ps.phylum.ts)[, 'Phylum']
+ps.phylum.ts
+```
+
+```{r, message=FALSE, fig.height = 5, fig.width=10}
+plot_bar(ps.phylum.ts,x = "Label_graph", fill="Phylum") + 
+  geom_bar(aes(color=Phylum, fill=Phylum), stat="identity", position="stack") +  
+  theme_bw()  +   
+  labs(y="Relative Abundance", x = "Sample") +
+  coord_cartesian(ylim = c(0,1), expand=0) + 
+  scale_color_manual(values=SteppedSequential5Steps) + 
+  scale_fill_manual(values=SteppedSequential5Steps) +
+  theme(axis.text.x=element_blank()) +
+  facet_wrap(~Sample_type, scales = "free") -> p
+
+p
+```
+
+
+```{r}
+ps_melt(ps.phylum.ts)  -> phylum.ts.melt
+phylum.ts.melt %>%
+  filter(Sample_type == "Lung Tissue") %>% 
+  doBy::summary_by(Abundance ~ OTU, FUN = median) %>%
+  arrange(desc(Abundance.median))
+```
+
+```{r}
+phylum.ts.melt %>%
+  filter(Sample_type == "Fecal") %>% 
+  doBy::summary_by(Abundance ~ OTU, FUN = median) %>%
+  arrange(desc(Abundance.median))
+```
+
+```{r, message=FALSE}
+ps.phylum.ts %>% 
+  subset_samples(Sample_type == "Fecal") %>% 
+  ps_arrange(desc(Firmicutes), desc(Bacteroidota), .target = "otu_table") -> ps.fecal.phylum.ts
+
+sample_data(ps.fecal.phylum.ts)$Sample_Order <- c(1:nrow(sample_data(ps.fecal.phylum.ts)))
+ps.fecal.phylum.ts
+
+ps.phylum.ts %>% 
+  subset_samples(Sample_type == "Lung Tissue") %>% 
+  ps_arrange(desc(Proteobacteria), desc(Actinobacteriota), .target = "otu_table") -> ps.lt.phylum.ts
+
+sample_data(ps.lt.phylum.ts)$Sample_Order <- c(1:nrow(sample_data(ps.lt.phylum.ts)))
+ps.lt.phylum.ts
+```
+
+
+```{r, message=FALSE, fig.height = 6, fig.width=10}
+ps_melt(ps.fecal.phylum.ts) %>%
+  ggplot(aes(fill=Phylum, y=Abundance, x=Sample_Order)) + 
+    geom_bar(position="fill", stat="identity", width = 1) +
+  theme_bw()  +   
+  labs(y="Relative Abundance", x = "Sample") +
+  coord_cartesian(ylim = c(0,1), expand=0) + 
+  scale_color_manual(values=SteppedSequential5Steps) + 
+  scale_fill_manual(values=SteppedSequential5Steps) +
+  facet_wrap(~Sample_type) + 
+  theme(axis.text.x=element_blank())  -> p.fecal
+
+p.fecal
+```
+
+```{r, message=FALSE, fig.height = 6, fig.width=5}
+ps_melt(ps.lt.phylum.ts) %>%
+  ggplot(aes(fill=Phylum, y=Abundance, x=Sample_Order)) + 
+    geom_bar(position="fill", stat="identity", width = 1) +
+  theme_bw()  +   
+  labs(y="Relative Abundance", x = "Sample") +
+  coord_cartesian(ylim = c(0,1), expand=0) + 
+  scale_color_manual(values=SteppedSequential5Steps) + 
+  scale_fill_manual(values=SteppedSequential5Steps) +
+  facet_wrap(~Sample_type) + 
+  theme(axis.text.x=element_blank())  -> p.lt
+
+p.lt
+```
+
+
+```{r}
+ragg::agg_jpeg(file.path(fig.dir, "fig_RelAb_fecal.jpeg"), width = 10, height = 6, units = "in", res = 600)
+p.fecal
+dev.off()
+```
+
+```{r}
+ragg::agg_jpeg(file.path(fig.dir, "fig_RelAb_lt.jpeg"), width = 5, height = 6, units = "in", res = 600)
+p.lt
+dev.off()
+```
+
+# Alpha Diversity: LT Samples 
+
+## Calculate 
+
+```{r, warning=FALSE, message=FALSE}
+ps.LT.asv %>% estimate_richness(measures = c("Observed", "Shannon")) -> LT_richness
+LT_richness$Faith <- pd(otu_table(ps.LT.asv), phy_tree(ps.LT.asv), include.root = FALSE)$PD 
+LT_richness %>% rownames_to_column(var = "Label") -> LT_richness
+gsub("\\.", "-", LT_richness$Label) -> LT_richness$Label 
+
+meta.df %>%  
+  filter(meta.df$Label %in% LT_richness$Label) %>% # merge with metadata
+  select(c(Label:DNA_ng_ul_raw, "Group")) %>% 
+  right_join(LT_richness, by = "Label") -> LT_richness
+
+LT_richness  %>% pivot_longer(
+  cols = contains(c("Observed", "Shannon", "Faith")),
+  names_to = c("Measurement")
+) -> LT_richness_stat # dataframe that works well for ggplot2() and anova_test()
+
+LT_richness_stat$Mouse <- factor(LT_richness_stat$Mouse)
+LT_richness_stat$Measurement <- factor(LT_richness_stat$Measurement)
+LT_richness_stat$Cohort <- factor(LT_richness_stat$Cohort)
+```
+
+```{r}
+LT_richness %>% nrow()
+LT_richness_stat %>% nrow()
+```
+
+```{r}
+44*3
+```
+
+## No surgery mice 
+
+We are most interested in intranasal treatment, diet, and genotype if possible. We also note that there were some mice whose lung tissues were collected on week 10 vs. week 13. 
+
+```{r}
+LT_richness %>% filter(Surgery == "None") -> lt.richness.nosurgery 
+lt.richness.nosurgery %>%
+  dplyr::count(Week, Genotype, Intranasal_Treatment) %>% arrange(n)
+
+lt.richness.nosurgery %>%
+  dplyr::count(Week, Intranasal_Treatment, Diet) %>% arrange(n)
+```
+
+
+Let's graph: 
+
+```{r}
+LT_richness_stat %>% filter(Surgery == "None") -> lt.richness.nosurgery.long
+
+lt.richness.nosurgery.long %>% 
+  ggplot(aes(x = Intranasal_Treatment, y = value)) +
+  geom_boxplot() + geom_point() + 
+  facet_wrap(vars(Measurement), scales = "free") + theme_bw()
+```
+
+```{r}
+lt.richness.nosurgery.long %>% 
+  ggplot(aes(x = Genotype, y = value)) +
+  geom_boxplot() + geom_point() + 
+  facet_wrap(vars(Measurement), scales = "free") + theme_bw()
+
+lt.richness.nosurgery.long %>% 
+  ggplot(aes(x = Diet, y = value)) +
+  geom_boxplot() + geom_point() + 
+  facet_wrap(vars(Measurement), scales = "free") + theme_bw()
+
+lt.richness.nosurgery.long %>% 
+  ggplot(aes(x = as.character(Week), y = value)) +
+  geom_boxplot() + geom_point() + 
+  facet_wrap(vars(Measurement), scales = "free") + theme_bw()
+
+lt.richness.nosurgery.long %>% 
+  ggplot(aes(x = Genotype, y = value)) +
+  geom_boxplot() + geom_point() + 
+  facet_grid(vars(Measurement), vars(Intranasal_Treatment), 
+             scales = "free") + theme_bw()
+
+lt.richness.nosurgery.long %>% 
+  ggplot(aes(x = Diet, y = value)) +
+  geom_boxplot() + geom_point() + 
+  facet_grid(vars(Measurement), vars(Intranasal_Treatment),
+             scales = "free") + theme_bw()
+
+lt.richness.nosurgery.long %>% 
+  ggplot(aes(x = as.character(Week), y = value)) +
+  geom_boxplot() + geom_point() + 
+  facet_grid(vars(Measurement), vars(Intranasal_Treatment),
+             scales = "free") + theme_bw()
+```
+
+Graphically, it looks like intranasal treatment, week, and genotype may be of interest. 
+
+```{r}
+lt.richness.nosurgery %>% nrow()
+```
+
+```{r}
+lt.richness.nosurgery %>%
+  dplyr::count(Week, Intranasal_Treatment) %>% arrange(n)
+```
+
+```{r}
+lt.richness.nosurgery.long %>% 
+  group_by(Week, Intranasal_Treatment, Measurement) %>%
+  shapiro_test(value) %>%
+  add_significance()
+```
+
+Mainly indistinguishable from normal distribution. 
+
+```{r}
+lt.richness.nosurgery.long %>% 
+  group_by(Week, Intranasal_Treatment, Measurement) %>%
+  identify_outliers(value) -> lt.nosurgery.outliers
+
+lt.nosurgery.outliers
+```
+
+Outliers only in week 10 groups. 
+
+```{r}
+meta.sam %>% filter(Sample_type == "Lung Tissue") %>% 
+  filter(Label %in% lt.nosurgery.outliers$Label) %>% 
+  dplyr::select(Label, Sample_type:DNA_ng_ul_raw, Notes)
+```
+
+Interesting, maybe genotype or sex is playing a role here? 
+
+```{r}
+lt.richness.nosurgery.long %>% 
+  ggqqplot(x = "value") + facet_grid(vars(Measurement), vars(Intranasal_Treatment), scales = "free")
+```
+
+
+
+```{r}
+lt.richness.nosurgery.long %>% 
+  group_by(Measurement) %>% 
+  anova_test(
+    dv = value,
+    between = c(Week, Intranasal_Treatment, Genotype),
+  ) %>% get_anova_table() %>%
+  adjust_pvalue(method = "holm") %>% 
+  add_significance()
+```
+
+Nothing is significant, sadly. Let's graph with intranasal treatment, as that had the greatest effect on host respiratory health metrics. 
+
+```{r}
+lt.richness.nosurgery.long %>%
+  group_by(Measurement) %>%
+  t_test(value ~ Intranasal_Treatment) %>% 
+  adjust_pvalue(method = "holm") %>% 
+  add_significance() -> lt.richness.nosurgery.res
+
+lt.richness.nosurgery.res
+```
+
+
+
+
+```{r, fig.height=5, fig.width=6}
+# Change facet label names
+alpha.labs <- c("Faith's PD", "Observed Richness", "Shannon")
+names(alpha.labs) <- c("Faith", "Observed", "Shannon")
+
+#lt.richness.nosurgery.res$y.position <- c(40, 225, 4.7)
+
+lt.richness.nosurgery.long %>%
+  ggplot(aes(x = Intranasal_Treatment, y = value, color = Intranasal_Treatment))+
+  geom_boxplot() + 
+  geom_point() + 
+  facet_wrap(~Measurement, scales = "free_y",
+             labeller = labeller(Measurement = alpha.labs)) + expand_limits(y = 0) + 
+  theme_bw(base_size = 14) + scale_fill_brewer(palette="RdBu") +
+  labs(y="Alpha Diversity Value", x="Intranasal Treatment", color = "Intranasal Treatment") + 
+  theme(legend.position = "top") -> lt.alpha.group1.week
+#  stat_pvalue_manual(lt.richness.nosurgery.res, label = "p.adj.signif")    -> lt.alpha.group1.week
+
+lt.alpha.group1.week
+```
+
+## HFD: effect of surgery? 
+
+For the after surgery timepoint for lung tissue, look at week 13 only and HFD. 
+
+```{r}
+LT_richness %>% filter(Diet == "High_Fat_Diet" & Week == 13) %>%
+  dplyr::count(Surgery, Intranasal_Treatment)
+
+LT_richness %>% filter(Diet == "High_Fat_Diet" & Week == 13) %>%
+  dplyr::count(Surgery)
+
+LT_richness %>% filter(Diet == "High_Fat_Diet" & Week == 13) %>%
+  dplyr::count(Intranasal_Treatment)
+```
+
+
+```{r}
+LT_richness %>% filter(Diet == "High_Fat_Diet" & Week == 13)%>% nrow()
+```
+
+```{r}
+LT_richness_stat %>% filter(Diet == "High_Fat_Diet" & Week == 13) -> lt.richness.hfd
+lt.richness.hfd  %>%
+  group_by(Measurement, Surgery) %>%
+  shapiro_test(value) %>% 
+  add_significance()
+```
+
+```{r}
+lt.richness.hfd %>% ggqqplot(x = "value") + facet_grid(vars(Measurement), vars(Surgery), scales = "free")
+```
+
+It looks like this is due to an outlier, but rarefaction curves looked like they plateaued. Proceed with caution. 
+
+```{r}
+lt.richness.hfd %>% 
+  group_by(Measurement, Surgery) %>%
+  shapiro_test(value) %>% 
+  add_significance()
+
+lt.richness.hfd %>% 
+  group_by(Measurement, Surgery) %>%
+  identify_outliers(value) 
+```
+
+```{r}
+lt.richness.hfd %>%
+  ggplot(aes(x = Surgery, y = value)) + 
+  geom_boxplot() + geom_point() + 
+  facet_wrap(vars(Measurement), scales = "free") + theme_bw()
+```
+
+```{r}
+lt.richness.hfd %>% 
+  group_by(Measurement) %>% 
+  anova_test(
+    dv = value,
+    between = c(Surgery, Intranasal_Treatment),
+  ) %>% get_anova_table() %>% 
+  adjust_pvalue(method = "holm") %>% 
+  add_significance()
+```
+
+Nothing is significant. Let's make a graph showing surgery: 
+
+```{r}
+lt.richness.hfd %>%
+  ggplot(aes(x = Surgery, y = value, color = Surgery)) + 
+  geom_boxplot() + geom_point() + 
+  facet_wrap(~Measurement, scales = "free_y",
+             labeller = labeller(Measurement = alpha.labs)) + expand_limits(y = 0) + 
+  theme_bw(base_size = 14) + scale_color_brewer(palette="Dark2") +
+  labs(y="Alpha Diversity Value", x="Surgery", color = "Surgery") + 
+  theme(legend.position = "top") -> fig.lt.hfd
+
+fig.lt.hfd
+```
+
+## Summary figure 
+
+```{r, fig.width=14, fig.height=5}
+plot_grid(
+  lt.alpha.group1.week, fig.lt.hfd,
+  labels = "AUTO", ncol = 2, label_size = 20, scale = 0.95,
+  rel_widths = c(1, 1.3)
+) -> fig.lt.alpha
+
+fig.lt.alpha
+```
+
+```{r}
+ragg::agg_jpeg(file.path(fig.dir, "fig_lt_alpha.jpeg"), width = 14, height = 5, units = "in", res = 600, scaling = 1)
+fig.lt.alpha
+dev.off()
+```
+
+# Lung tissue beta diversity
+
+## No surgery mice 
+
+For PERMANOVA, let's have n>=5 for each group. 
+
+```{r, warning=FALSE, message=FALSE}
+ps.LT.asv.ts %>% subset_samples(Surgery == "None")  -> ps.lt.ts.nosurgery
+
+# Calculate ditances
+ps.lt.ts.nosurgery %>% phyloseq::distance(method = "unifrac") -> LT_nosurgery_uni
+ps.lt.ts.nosurgery %>% phyloseq::distance(method = "wunifrac") -> LT_nosurgery_weighted_uni
+
+# Ordinate distances
+LT_nosurgery.uni_ord <- ordinate(ps.lt.ts.nosurgery, method = "PCoA", distance = "unifrac")
+LT_nosurgery.weighted_uni_ord <- ordinate(ps.lt.ts.nosurgery, method = "PCoA", distance = "wunifrac")
+
+# Extract dataframe
+ps.lt.ts.nosurgery@sam_data %>% data.frame() -> LT_nosurgery.df
+
+LT_nosurgery.df %>% dplyr::count(Genotype, Intranasal_Treatment) %>% arrange(n)
+```
+
+```{r, message=FALSE}
+# Set seed for reproducibility
+# UniFrac
+set.seed(123)
+
+adonis2(formula = LT_nosurgery_uni ~ Intranasal_Treatment * Genotype, data = LT_nosurgery.df, permutations = 9999, parallel = getOption("mc.cores"))
+
+# Weighted UniFrac
+set.seed(123)
+adonis2(formula = LT_nosurgery_weighted_uni ~ Intranasal_Treatment  * Genotype, data = LT_nosurgery.df, permutations = 9999, parallel = getOption("mc.cores")) 
+```
+
+Not significant. 
+
+### Graphs
+
+```{r}
+plot_ordination(ps.lt.ts.nosurgery, LT_nosurgery.uni_ord, type = "samples", color = "Intranasal_Treatment") + theme_bw()  + 
+  labs(title = "UniFrac") +
+  scale_color_brewer(palette="Dark2")
+
+plot_ordination(ps.lt.ts.nosurgery, LT_nosurgery.weighted_uni_ord, type = "samples", color = "Intranasal_Treatment") + theme_bw()  + 
+  labs(title = "Weighted UniFrac") +
+  scale_color_brewer(palette="Dark2")
+```
+
+```{r}
+plot_ordination(ps.lt.ts.nosurgery, LT_nosurgery.uni_ord, type = "samples", color = "Intranasal_Treatment") + theme_bw(base_size = 14)  + 
+  scale_color_brewer(palette="Dark2") +
+  theme(legend.position = "top") -> p.lt.nosurgery.uni
+p.lt.nosurgery.uni
+
+plot_ordination(ps.lt.ts.nosurgery, LT_nosurgery.weighted_uni_ord, type = "samples", color = "Intranasal_Treatment") + 
+  theme_bw(base_size = 14)  + 
+  scale_color_brewer(palette="Dark2") +
+  theme(legend.position = "top") -> p.lt.nosurgery.wuni
+p.lt.nosurgery.wuni
+```
+
+```{r, fig.height=5, fig.width=10}
+plot_grid(p.lt.nosurgery.uni, p.lt.nosurgery.wuni,
+          ncol = 2, labels = "AUTO", label_size = 20) -> p.lt.nosurgery
+
+p.lt.nosurgery
+```
+
+```{r}
+ragg::agg_jpeg(file.path(fig.dir, "fig_lt_nosurgery_beta.jpeg"), width = 10, height = 5, units = "in", res = 600, scaling = 1.1)
+p.lt.nosurgery
+dev.off()
+```
+
+## Did Surgery result in lung microbiome changes? 
+
+Only look at at HFD at week 13. 
+
+```{r, warning=FALSE, message=FALSE}
+ps.LT.asv.ts %>% subset_samples(Diet == "High_Fat_Diet") %>% subset_samples(Week == "13")  -> ps.lt.ts.hfd
+
+# Calculate ditances
+ps.lt.ts.hfd %>% phyloseq::distance(method = "unifrac") -> LT_hfd_uni
+ps.lt.ts.hfd %>% phyloseq::distance(method = "wunifrac") -> LT_hfd_weighted_uni
+
+# Ordinate distances
+LT_hfd.uni_ord <- ordinate(ps.lt.ts.hfd, method = "PCoA", distance = "unifrac")
+LT_hfd.weighted_uni_ord <- ordinate(ps.lt.ts.hfd, method = "PCoA", distance = "wunifrac")
+
+# Extract dataframe
+ps.lt.ts.hfd@sam_data %>% data.frame() -> LT_hfd.df
+
+LT_hfd.df %>% dplyr::count(Surgery) %>% arrange(n)
+```
+
+```{r}
+# Set seed for reproducibility
+# UniFrac
+set.seed(123)
+
+adonis2(formula = LT_hfd_uni ~ Surgery, data = LT_hfd.df, permutations = 9999, parallel = getOption("mc.cores"))
+
+# Weighted UniFrac
+set.seed(123)
+adonis2(formula = LT_hfd_weighted_uni ~ Surgery, data = LT_hfd.df, permutations = 9999, parallel = getOption("mc.cores")) 
+```
+
+NS. 
+
+```{r}
+plot_ordination(ps.lt.ts.hfd, LT_hfd.uni_ord, type = "samples", color = "Surgery") + theme_bw(base_size = 14)  + 
+  scale_color_brewer(palette="Dark2") +
+  theme(legend.position = "top") -> p.lt.hfd.uni
+p.lt.hfd.uni
+
+plot_ordination(ps.lt.ts.hfd, LT_hfd.weighted_uni_ord, type = "samples", color = "Surgery") + 
+  theme_bw(base_size = 14)  + 
+  scale_color_brewer(palette="Dark2") +
+  theme(legend.position = "top") -> p.lt.hfd.wuni
+p.lt.hfd.wuni
+```
+
+```{r, fig.height=5, fig.width=10}
+plot_grid(p.lt.hfd.uni, p.lt.hfd.wuni,
+          ncol = 2, labels = "AUTO", label_size = 20) -> p.lt.hfd
+
+p.lt.hfd
+```
+
+```{r}
+ragg::agg_jpeg(file.path(fig.dir, "fig_lt_hfd_beta.jpeg"), width = 10, height = 5, units = "in", res = 600, scaling = 1.1)
+p.lt.hfd
+dev.off()
+```
+
+
+# Alpha Diversity: Fecal Samples
+
+## Calculate 
+
+```{r}
+ps.F.asv
+```
+
+
+```{r}
+ps.F.asv %>% estimate_richness(measures = c("Observed", "Shannon")) -> F_richness
+F_richness$Faith <- pd(otu_table(ps.F.asv), phy_tree(ps.F.asv), include.root = FALSE)$PD 
+F_richness %>% rownames_to_column(var = "Label") -> F_richness
+gsub("X", "", F_richness$Label) -> F_richness$Label # remove X in front of sample names
+
+meta.df %>%  
+  filter(meta.df$Label %in% F_richness$Label) %>% # merge with metadata
+  select(c(Label, Genotype:Surgery, Kit:Feces_weight, Week, Cohort, Mouse, Notes)) %>% 
+  right_join(F_richness, by = "Label") -> F_richness
+
+F_richness %>% group_by(Mouse, Week) %>% filter(n()>1) -> F_richness.dup
+
+F_richness.dup
+
+# calculate averages for duplicates
+F_richness.dup %>%
+  dplyr::select(Label, Mouse, Week, Observed:Faith) %>% group_by(Mouse) %>%
+  dplyr::summarise(Observed = mean(Observed),
+                   Shannon = mean(Shannon),
+                   Faith = mean(Faith)) -> F_richness.dup.calc
+
+# add week information for duplicates
+F_richness.dup %>% dplyr::select(Mouse, Week) %>% unique() %>%
+  ungroup() %>%
+  right_join(F_richness.dup.calc, by = "Mouse") -> F_richness.dup.calc 
+
+# add metadata for duplicates
+meta.df %>% filter(Sample_type == "Fecal") %>%
+  filter(Mouse %in% F_richness.dup.calc$Mouse) %>% 
+  select(c(Genotype:Surgery, Week, Cohort, Mouse, Notes)) %>% 
+  right_join(F_richness.dup.calc, by = c("Mouse", "Week")) %>%
+  unique() -> F_richness.dup.calc
+
+F_richness.dup.calc
+
+# Clean up: remove duplicates from original dataframe, then add calculated values. 
+F_richness %>% filter(!Label %in% F_richness.dup$Label) %>%
+  bind_rows(F_richness.dup.calc) -> F_richness
+```
+
+```{r}
+F_richness %>% filter(is.na(Diet) == FALSE) -> F_richness
+
+F_richness  %>% pivot_longer(
+  cols = contains(c("Observed", "Shannon", "Faith")),
+  names_to = c("Measurement")
+) -> F_richness_stat # dataframe that works well for ggplot2() and anova_test()
+
+F_richness_stat$Mouse <- factor(F_richness_stat$Mouse)
+F_richness_stat$Measurement <- factor(F_richness_stat$Measurement)
+F_richness_stat$Cohort <- factor(F_richness_stat$Cohort)
+```
+
+## No Surgery group: effect of diet? 
+
+I want to see if high fat diet resulted in a significant decline in alpha diversity, as has been reported before. 
+To do this, I will compare `wk 0` and `wk 10` alpha diversity for all mice based on diet (to increase *n*). I also want to see if genotype and sex had an effect. 
+
+```{r}
+F_richness %>% filter(Surgery == "None") -> F_richness.nosurgery
+F_richness.nosurgery %>%
+  dplyr::count(Week, Diet, Genotype, Sex) %>% arrange(n)
+```
+
+```{r}
+F_richness.nosurgery %>%
+  dplyr::count(Week, Diet, Genotype) %>% arrange(n)
+```
+
+```{r}
+F_richness.nosurgery %>% distinct(Mouse) %>% nrow()
+F_richness.nosurgery %>% nrow()
+```
+
+```{r}
+F_richness_stat %>% filter(Surgery == "None") -> F_richness.nosurgery.long
+
+F_richness.nosurgery.long %>%
+  group_by(Measurement, Week, Diet, Genotype) %>% 
+  shapiro_test(value) %>%
+  add_significance() -> F_richness.nosurgery.shapirowilk
+
+F_richness.nosurgery.shapirowilk
+F_richness.nosurgery.shapirowilk %>% filter(p<0.05)
+```
+
+All indistinguishable from normal distribution.
+
+```{r}
+F_richness.nosurgery.long %>%
+  group_by(Measurement, Week, Diet, Genotype) %>% 
+  identify_outliers(value)
+```
+
+The feces weight, gDNA concentrations, and notes (or the lack thereof) for even extreme outliers look good. 
+
+```{r}
+F_richness.nosurgery.long %>%
+  group_by(Measurement) %>% 
+  anova_test(dv = value, 
+             wid = Mouse, 
+             within = Week,
+             between = c(Diet, Genotype)) %>%
+  get_anova_table() %>% 
+  as.data.frame() %>% 
+  adjust_pvalue(method = "holm") %>% 
+  add_significance() -> F.nosurgery.res
+
+F.nosurgery.res
+```
+
+```{r}
+F.nosurgery.res %>% filter(p.adj < 0.05)
+```
+
+Let's graph what they look like: 
+
+```{r}
+# Change facet label names
+alpha.labs <- c("Faith's PD", "Observed Richness", "Shannon")
+names(alpha.labs) <- c("Faith", "Observed", "Shannon")
+
+ggplot(F_richness.nosurgery.long, aes(x = as.factor(Week), y = value, color = Diet))+
+  geom_boxplot(position=position_dodge(width = 0.8)) + geom_point(position=position_dodge(width = 0.8)) + 
+  facet_wrap(~Measurement, scales = "free", labeller = labeller(Measurement = alpha.labs)) + 
+  labs(x="Week", y="Alpha Diversity Metric Value", fill="Diet")  + expand_limits(y = 0) + theme_bw() +
+  theme(legend.position = "top") 
+
+```
+
+
+```{r, fig.height=5, fig.width=6}
+# plot mean +/- standard error
+fun_se <- function(x){
+  c(std_error = sd(x)/sqrt(length(x)), mean = mean(x))
+}
+
+# calculate mean and se for each week, measurement, and diet
+F_richness.nosurgery.long %>%
+  doBy::summary_by(value ~ Measurement + Week + Diet, FUN = fun_se) -> F_richness.nosurgery.graph
+
+ggplot(F_richness.nosurgery.graph, aes(x = Week, y = value.mean, color = Diet))+
+  geom_line(aes(group=Diet)) + 
+  geom_errorbar(aes(ymin=value.mean-value.std_error, ymax=value.mean+value.std_error, width=1)) +
+  theme_bw(base_size = 14) + scale_fill_brewer(palette="RdBu") + 
+  facet_wrap(~Measurement, scales = "free_y", 
+             labeller = labeller(Measurement = alpha.labs)) + 
+  labs(x="Week", y="Alpha Diversity Metric Value", fill="Diet")  + expand_limits(y = 0) +
+  theme(legend.position = "top") -> fig.alpha.nosurgery
+
+fig.alpha.nosurgery
+```
+
+```{r}
+ragg::agg_jpeg(file.path(fig.dir, "fig.alpha.nosurgery.jpeg"), width = 6, height = 5, units = "in", res = 600)
+fig.alpha.nosurgery
+dev.off()
+```
+
+## Effect of surgery? 
+
+```{r}
+F_richness %>%
+  filter(Diet == "High_Fat_Diet" & Week == 13) -> f.richness.hfd  
+
+f.richness.hfd %>% dplyr::count(Surgery) %>% arrange(n)
+
+F_richness %>%
+  filter(Diet == "High_Fat_Diet" & Week == 13)  %>% distinct(Mouse) %>% nrow()
+```
+
+```{r}
+f.richness.hfd %>% dplyr::count(Surgery, Genotype) %>% arrange(n)
+f.richness.hfd %>% dplyr::count(Surgery, Genotype, Sex) %>% arrange(n)
+```
+
+```{r}
+F_richness_stat %>%
+  filter(Diet == "High_Fat_Diet" & Week == 13) -> f.richness.hfd
+```
+
+```{r}
+f.richness.hfd %>%
+  group_by(Measurement, Surgery, Genotype) %>% 
+  shapiro_test(value) %>%
+  add_significance()
+```
+
+
+```{r}
+f.richness.hfd %>%
+  group_by(Measurement, Surgery, Genotype) %>% 
+  identify_outliers(value)
+```
+
+```{r}
+f.richness.hfd %>% filter(Genotype == "KO") %>% 
+  ggqqplot(x = "value") + facet_grid(vars(Measurement), vars(Surgery), scales = "free")
+```
+
+The QQ plots look quite good, except for the few outliers. 
+
+```{r}
+f.richness.hfd %>%
+  group_by(Measurement) %>% 
+  anova_test(dv = value, 
+             wid = Mouse, 
+             between = c(Surgery, Genotype, Sex)) %>%
+  get_anova_table() %>% 
+  as.data.frame() %>% 
+  adjust_pvalue(method = "holm") %>% 
+  add_significance() -> F.hfd.res
+
+F.hfd.res
+```
+
+All ns. Let's graph: 
+
+
+```{r, fig.height=5, fig.width=7}
+f.richness.hfd %>%
+  ggplot(aes(x=Surgery, y=value, color=Surgery)) + 
+  geom_boxplot() + 
+  geom_point() + 
+  scale_fill_brewer(palette="RdBu") + 
+  labs( y="Alpha Diversity Metric value", color="Surgery", x = "Surgery") + 
+  facet_wrap(vars(Measurement), scales = "free", labeller = labeller(Measurement = alpha.labs)) +
+  theme_bw(base_size = 14)  + expand_limits(y = 0) + theme(legend.position = "top") -> fig.alpha.hfd
+fig.alpha.hfd
+```
+
+```{r}
+ragg::agg_jpeg(file.path(fig.dir, "fig_f_alpha_hfd.jpeg"), width = 7, height = 5, units = "in", res = 600)
+fig.alpha.hfd
+dev.off()
+```
+
+
+# Beta Diversity with fecal samples: Diet
+
+```{r, message=FALSE}
+ps.F.asv.ts %>% subset_samples(Surgery == "None") -> F_Diet
+
+F_Diet %>%
+  phyloseq::distance(method = "unifrac") -> F_uni
+F_Diet %>%
+  phyloseq::distance(method = "wunifrac") -> F_weighted_uni
+
+F_Diet@sam_data %>% data.frame() -> F.df
+
+F_uni_ord <- ordinate(F_Diet, method = "PCoA", distance = "unifrac")
+F_weighted_uni_ord <- ordinate(F_Diet, method = "PCoA", distance = "wunifrac")
+```
+
+```{r}
+F.df %>% dplyr::count(Diet, Week) %>% arrange(n)
+```
+
+
+```{r}
+F.df %>% dplyr::count(Diet, Genotype, Week) %>% arrange(n)
+F.df %>% nrow()
+F.df %>% distinct(Mouse) %>%  nrow()
+```
+
+```{r}
+# Set seed for reproducibility
+set.seed(123)
+
+adonis2(formula = F_uni ~ Diet * Genotype * Week, data = F.df, permutations = 9999, parallel = getOption("mc.cores")) -> F_diet_uni.res
+F_diet_uni.res
+
+set.seed(123)
+adonis2(formula = F_weighted_uni ~ Diet * Genotype * Week, data = F.df, permutations = 9999, parallel = getOption("mc.cores")) -> F_diet_weighted_uni.res
+
+F_diet_weighted_uni.res
+```
+
+As expected, diet is highly significant. Genotype is significant but not any of its interaction terms. 
+
+```{r}
+F.df %>% dplyr::count(Genotype, Diet) %>% arrange(n)
+```
+
+
+```{r}
+plot_ordination(F_Diet, F_uni_ord, type = "samples", color = "Diet") + theme_bw(base_size = 14)   + 
+  scale_fill_brewer(palette="RdBu") + theme(legend.position = "top") + labs(title = "UniFrac distance") + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  facet_wrap(~Week) + stat_ellipse() -> fig.diet.uni
+
+plot_ordination(F_Diet, F_weighted_uni_ord, type = "samples", color = "Diet") + 
+  theme_bw(base_size = 14)   + 
+  scale_fill_brewer(palette="RdBu") + theme(legend.position = "top", panel.spacing.x = unit(10, "mm")) + 
+  labs(title = "Weighted UniFrac distance") + theme(plot.title = element_text(hjust = 0.5)) + 
+  facet_wrap(~Week) + stat_ellipse() -> fig.diet.w.uni
+
+fig.diet.uni 
+fig.diet.w.uni
+```
+
+```{r}
+plot_ordination(F_Diet, F_uni_ord, type = "samples", color = "Genotype") + theme_bw(base_size = 14)   + labs(title = "UniFrac distance") + 
+  scale_fill_brewer(palette="RdBu") + theme(legend.position = "top", plot.title = element_text(hjust = 0.5))  + stat_ellipse() -> fig.geno.uni
+
+plot_ordination(F_Diet, F_weighted_uni_ord, type = "samples", color = "Genotype") + labs(title = "Weighted UniFrac distance") + 
+  theme_bw(base_size = 14)   + 
+  scale_fill_brewer(palette="Dark2") + theme(legend.position = "top", panel.spacing.x = unit(8, "mm"), plot.title = element_text(hjust = 0.5)) + stat_ellipse() -> fig.geno.w.uni
+
+# UniFrac: diet*genotype was significant
+plot_ordination(F_Diet, F_uni_ord, type = "samples", color = "Genotype") + theme_bw(base_size = 14)   + 
+  scale_color_brewer(palette="Dark2") + facet_wrap(~Diet) +  labs(title = "UniFrac distance") + 
+  theme(legend.position = "top", plot.title = element_text(hjust = 0.5))  + stat_ellipse() -> fig.diet.geno.uni
+
+fig.geno.uni
+fig.diet.geno.uni
+fig.geno.w.uni
+```
+
+```{r}
+plot_ordination(F_Diet, F_uni_ord, type = "samples", color = "Genotype") + theme_bw(base_size = 14)   + 
+  scale_fill_brewer(palette="RdBu") +
+  theme(legend.position = "top", panel.spacing.x = unit(5, "mm")) +
+  facet_grid(vars(Diet),vars(Week)) + stat_ellipse()  -> fig.diet.geno.week.uni
+fig.diet.geno.week.uni
+``` 
+
+```{r, fig.height=12, fig.width=18}
+plot_grid(
+  fig.alpha.nosurgery,fig.diet.uni,
+  fig.diet.w.uni, fig.diet.geno.uni, labels = "AUTO", ncol = 2, label_size = 20
+) -> fig.diet.summary
+
+fig.diet.summary
+```
+
+```{r}
+ragg::agg_jpeg(file.path(fig.dir, "fig_diet_summary.jpeg"), width = 18, height = 12, units = "in", res = 600)
+fig.diet.summary
+dev.off()
+```
+
+```{r, fig.height=6, fig.width=12}
+plot_grid(
+  fig.geno.uni, fig.geno.w.uni, labels = "AUTO", ncol = 2, label_size = 20
+) -> fig.nosurgery.geno.summary
+
+fig.nosurgery.geno.summary
+```
+
+```{r}
+ragg::agg_jpeg(file.path(fig.dir, "fig_geno_summary.jpeg"), width = 12, height = 6, units = "in", res = 600)
+fig.nosurgery.geno.summary
+dev.off()
+```
+
+## Fecal beta diversity: HFD
+
+HFD: Effect of surgery; focus on *wk 13* only. 
+
+```{r, message=FALSE}
+ps.F.asv.ts %>% subset_samples(Diet == "High_Fat_Diet" & Week == 13) -> F_HFD
+F_HFD
+
+F_HFD %>%
+  phyloseq::distance(method = "unifrac") -> F_uni.HFD
+F_HFD %>%
+  phyloseq::distance(method = "wunifrac") -> F_weighted_uni.HFD
+
+F_HFD@sam_data %>% data.frame() -> F_HFD.df
+
+F_uni_ord.HFD <- ordinate(F_HFD, method = "PCoA", distance = "unifrac")
+F_weighted_uni_ord.HFD <- ordinate(F_HFD, method = "PCoA", distance = "wunifrac")
+```
+
+
+```{r}
+F_HFD.df %>% dplyr::count(Surgery) %>% arrange(n)
+F_HFD.df %>% dplyr::count(Genotype) %>% arrange(n)
+F_HFD.df %>% dplyr::count(Surgery, Genotype) %>% arrange(n)
+F_HFD.df %>% nrow()
+```
+
+
+```{r}
+# Set seed for reproducibility
+set.seed(123)
+
+adonis2(formula = F_uni.HFD ~ Surgery * Genotype, data = F_HFD.df, permutations = 9999, parallel = getOption("mc.cores")) 
+
+set.seed(123)
+adonis2(formula = F_weighted_uni.HFD ~ Surgery * Genotype, data = F_HFD.df, permutations = 9999, parallel = getOption("mc.cores")) 
+```
+
+Genotype is significant, surgery is not. 
+
+plot_ordination(F_Diet, F_weighted_uni_ord, type = "samples", color = "Genotype") + labs(title = "Weighted UniFrac distance") + 
+  theme_bw(base_size = 14)   + 
+  scale_fill_brewer(palette="RdBu") + theme(legend.position = "top", panel.spacing.x = unit(8, "mm"), plot.title = element_text(hjust = 0.5)) + stat_ellipse() -> fig.geno.w.uni
+  
+```{r}
+# stat_ellipse for the ones that are * 
+plot_ordination(F_HFD, F_uni_ord.HFD, type = "samples", color = "Genotype") + theme_bw(base_size = 14)   + 
+  labs(title = "UniFrac distance") + 
+  theme(legend.position = "top", plot.title = element_text(hjust = 0.5)) +  stat_ellipse() -> fig.hfd.uni.geno
+fig.hfd.uni.geno
+
+
+plot_ordination(F_HFD, F_weighted_uni_ord.HFD, type = "samples", color = "Genotype") + theme_bw(base_size = 14)   + 
+  labs(title = "Weighted UniFrac distance") + 
+  theme(legend.position = "top", plot.title = element_text(hjust = 0.5)) + 
+  stat_ellipse() -> fig.hfd.w.uni.geno
+fig.hfd.w.uni.geno
+
+```
+
+```{r}
+# Graphing out of curiosity  
+plot_ordination(F_HFD, F_uni_ord.HFD, type = "samples", color = "Surgery") + theme_bw(base_size = 14)   + 
+  scale_color_brewer(palette="Dark2") + theme(legend.position = "top") + stat_ellipse()
+
+plot_ordination(F_HFD, F_weighted_uni_ord.HFD, type = "samples", color = "Surgery") + theme_bw(base_size = 14)   + 
+  scale_color_brewer(palette="Dark2") + theme(legend.position = "top")  + stat_ellipse()
+```
+
+```{r, fig.height=5, fig.width=12}
+plot_grid(
+  fig.hfd.uni.geno,
+  fig.hfd.w.uni.geno, 
+  labels = "AUTO", ncol = 2, label_size = 20
+) -> fig.hfd.summary.beta
+
+fig.hfd.summary.beta
+```
+
+```{r}
+ragg::agg_jpeg(file.path(fig.dir, "fig_hfd_beta.jpeg"), width = 12, height = 5, units = "in", res = 600)
+fig.hfd.summary.beta
+dev.off()
+```
+
+
+# Reproducibility
+
+```{r}
+sessionInfo()
+```

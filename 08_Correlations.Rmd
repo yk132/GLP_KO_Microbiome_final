@@ -60,9 +60,6 @@ fig.dir = file.path(git.dir, "figures")
 map.file = file.path(git.dir, "Metadata_GLP1.csv")
 meta.df = read_csv(map.file, show_col_types = FALSE)
 
-F_hfd_intersect.file = file.path(git.dir, "fecal_deseq_hfd_intersect.csv")
-f.hfd.intersect = read_csv(F_hfd_intersect.file, show_col_types = FALSE)
-
 F_nosurgery_intersect.file = file.path(git.dir, "fecal_deseq_nosurgery_intersect.csv")
 f.nosurgery.intersect = read_csv(F_nosurgery_intersect.file, show_col_types = FALSE)
 
@@ -129,10 +126,8 @@ f.ra %>% distinct(Sample) %>% nrow()
 ## Subset fecal taxa to only those that were differentially abundant
 
 ```{r}
-f.hfd.intersect$Group <- "HFD"
 f.nosurgery.intersect$Group <- "No Surgery"
-
-rbind(f.hfd.intersect, f.nosurgery.intersect) -> f.intersect
+f.nosurgery.intersect -> f.intersect
 f.intersect
 ```
 
@@ -356,24 +351,40 @@ micro.corr.res %>% dplyr::rename(Health_metric = var1, row = var2, Metric_Type =
 ```
 
 ```{r}
-f.nosurgery.intersect %>% filter(row %in% f.hfd.intersect$row)
-```
-
-```{r}
-micro.corr.res %>% filter(Taxon %in% f.hfd.intersect$row)
-```
-
-```{r}
 nrow(micro.corr.res)
 ```
 
+# Clean up correlation results
 
 ```{r}
-micro.corr.res %>% datatable()
+micro.corr.res %>% distinct(Health_metric)
 ```
 
 ```{r}
-write_csv(micro.corr.res, file.path(git.dir, "Microbiome_corr_res.csv"), append = FALSE, col_names = TRUE)
+micro.corr.res %>% 
+  mutate(Health_metric = case_when(
+    Health_metric == "Weight" ~ "Body Weight",
+    Health_metric == "AUC" ~ "Glucose AUC",
+    Health_metric == "MaxPeak" ~ "Glucose max. peak",
+    Health_metric == "Glucose_min_0" ~ "Baseline glucose",
+    Health_metric == "GLP1_pM" ~ "Serum GLP-1",
+    Health_metric == "Leptin_pg_ml" ~ "Serum leptin",
+    Health_metric == "Ghrelin_pg_ml" ~ "Serum ghrelin",
+    Health_metric == "PYY_pg_ml" ~ "Serum PYY",
+    Health_metric == "C_peptide_pg_ml" ~ "Serum C-peptide",
+    Health_metric == "Per_Eos" ~ "% eosinophils in BALF"
+  )) %>% 
+  dplyr::arrange(Taxonomic_Rank, Taxon, Health_metric) -> micro.corr.res.export
+head(micro.corr.res.export)
+```
+
+
+```{r}
+micro.corr.res.export %>% datatable()
+```
+
+```{r}
+write_csv(micro.corr.res.export, file.path(git.dir, "Microbiome_corr_res.csv"), append = FALSE, col_names = TRUE)
 ```
 
 
@@ -421,10 +432,6 @@ diff.meta.df %>% select(Label, Per_Eos:Per_Neut) %>%
 
 ```{r}
 head(f.ra.graph.corr)
-```
-
-```{r}
-micro.corr.res %>% filter(str_detect(Taxon, "Lactoba") == TRUE)
 ```
 
 
@@ -506,7 +513,7 @@ micro.corr.res %>%
 protein.micro.corr %>%
     ggplot(aes(x = `Lachnospiraceae UCG-001`, y = GLP1_pM)) + 
       geom_point() +
-      labs(y= "GLP-1 (pM)",
+      labs(y= "Serum GLP-1 (pM)",
            x= "*Lachnospiraceae UCG-001* Relative Abundance") +
       theme_bw(base_size = 14)+ expand_limits(y = 0) + 
   theme(axis.title.x = element_markdown())-> fig.lachno.glp1
@@ -517,7 +524,7 @@ fig.lachno.glp1
 protein.micro.corr %>%
     ggplot(aes(x = Bifidobacterium, y = GLP1_pM)) + 
       geom_point() +
-      labs(y= "GLP-1 (pM)",
+      labs(y= "Serum GLP-1 (pM)",
            x= "*Bifidobacterium* Relative Abundance") +
       theme_bw(base_size = 14)+ expand_limits(y = 0)+ 
   theme(axis.title.x = element_markdown())  -> fig.bifido.glp1
@@ -529,7 +536,7 @@ fig.bifido.glp1
 protein.micro.corr %>%
     ggplot(aes(x = Parasutterella, y = GLP1_pM)) + 
       geom_point() +
-      labs(y= "GLP-1 (pM)",
+      labs(y= "Serum GLP-1 (pM)",
            x= "*Parasutterella* Relative Abundance") +
       theme_bw(base_size = 14)+ expand_limits(y = 0) + 
   theme(axis.title.x = element_markdown()) -> fig.para.glp1
